@@ -1,0 +1,237 @@
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.comment-badge {
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.comment-badge:hover {
+    transform: scale(1.1);
+}
+
+.like-badge {
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.like-badge:hover {
+    transform: scale(1.1);
+}
+
+.card-footer {
+    align-items: center;
+}
+
+.article-link {
+    display: block;
+}
+
+.article-link .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.article-link:hover .card {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.featured-link-mobile {
+    display: block;
+}
+
+.featured-link-mobile .featured-article {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.featured-link-mobile:hover .featured-article {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.featured-link-mobile:active .featured-article {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.suggested-article-link {
+    display: block;
+}
+
+.suggested-article-link .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.suggested-article-link:hover .card {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.suggested-article-link:active .card {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.featured-image-mobile {
+    height: 250px;
+    object-fit: cover;
+}
+
+@media (min-width: 768px) {
+    .featured-article .row {
+        min-height: 400px;
+    }
+    
+    .featured-image {
+        height: 100%;
+        object-fit: cover;
+        width: 100%;
+        display: block;
+    }
+    
+    .featured-article {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .featured-article:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.featured-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+.featured-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.featured-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.featured-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+@media (max-width: 992px) {
+    .featured-title {
+        font-size: 1.75rem;
+    }
+    
+    .featured-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .card-img-top {
+        height: 200px;
+    }
+    
+    .featured-article .row {
+        flex-direction: column;
+        flex-wrap: wrap;
+        min-height: auto;
+    }
+    
+    .featured-article .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .featured-image {
+        height: 250px;
+        width: 100%;
+        border-radius: 0;
+    }
+    
+    .featured-body {
+        padding: 1.5rem;
+    }
+    
+    .featured-title {
+        font-size: 1.5rem;
+    }
+    
+    .featured-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .featured-stats {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 1.5rem;
+    }
+    
+    .card-body p {
+        font-size: 0.95rem;
+    }
+    
+    .featured-body {
+        padding: 1rem;
+    }
+    
+    .featured-title {
+        font-size: 1.25rem;
+    }
+    
+    .featured-image {
+        height: 200px;
+    }
+    
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    header {
+        padding: 2rem 0 !important;
+    }
+    
+    .navbar-brand img {
+        max-height: 50px;
+    }
+}
+
+
+

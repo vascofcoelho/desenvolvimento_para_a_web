@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rabbit Head Blog</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="imgs/logo.png" alt="Rabbit Head" style="max-height: 70px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" href="index.html">Início</a>
+                    <a class="nav-link" href="sobre-nos.html">Sobre Nós</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cabeçalho -->
+    <header class="bg-success text-white text-center py-5">
+        <div class="container">
+            <h1 class="display-4">Rabbit Head Blog</h1>
+            
+        </div>
+    </header>
+
+    <!-- Lista de Artigos -->
+    <main class="container my-5">
+        <!-- Artigo em Destaque -->
+        <div class="mb-5">
+            <a href="artigo-4.html" class="text-decoration-none text-reset featured-link-mobile d-md-none">
+                <div class="card featured-article">
+                    <img src="imgs/imagem4.jpg" class="card-img-top featured-image-mobile" alt="Artigo em Destaque">
+                    <div class="card-body featured-body">
+                        <span class="badge bg-success mb-3">Destaque</span>
+                        <h2 class="card-title featured-title">Goleada da Académica de Coimbra</h2>
+                        <p class="card-text text-muted mb-3">Uma vitória esmagadora! Revive o espetáculo de futebol da Académica de Coimbra com uma performance brilhante e memorável. Este artigo descreve em detalhe como o clube conquistou uma vitória dominadora que deixou todos impressionados.</p>
+                        <p class="card-text mb-4"><small class="text-muted"><i class="bi bi-person-circle"></i> Pedro • <i class="bi bi-calendar-event"></i> 17/10/2025</small></p>
+                    </div>
+                </div>
+            </a>
+            <div class="card featured-article d-none d-md-block">
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        <img src="imgs/imagem4.jpg" class="img-fluid featured-image" alt="Artigo em Destaque">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body featured-body">
+                            <div>
+                                <span class="badge bg-success mb-3">Destaque</span>
+                                <h2 class="card-title featured-title">Goleada da Académica de Coimbra</h2>
+                                <p class="card-text text-muted mb-3">Uma vitória esmagadora! Revive o espetáculo de futebol da Académica de Coimbra com uma performance brilhante e memorável. Este artigo descreve em detalhe como o clube conquistou uma vitória dominadora que deixou todos impressionados.</p>
+                                <p class="card-text mb-4"><small class="text-muted"><i class="bi bi-person-circle"></i> Pedro • <i class="bi bi-calendar-event"></i> 17/10/2025</small></p>
+                            </div>
+                            <div class="featured-actions">
+                                <a href="artigo-4.html" class="btn btn-success btn-lg">
+                                    Ver artigo completo <i class="bi bi-arrow-right"></i>
+                                </a>
+                                <div class="featured-stats">
+                                    <a href="artigo-4.html#comentarios" class="text-decoration-none text-reset">
+                                        <span class="comment-badge"><i class="bi bi-chat-left-text"></i> 2 comentários</span>
+                                    </a>
+                                    <span class="like-badge" data-like-id="artigo-4"><i class="bi bi-heart-fill text-danger"></i> <span class="like-count">12</span> gostos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Outros Artigos -->
+        <h4 class="mb-4">Artigos Recentes</h4>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            
+            <!-- Artigo 1 -->
+            <div class="col">
+                <a href="artigo-1.html" class="text-decoration-none text-reset article-link">
+                    <div class="card h-100">
+                        <img src="imgs/imagem1.jpg" class="card-img-top" alt="Artigo 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Flores: benefícios para a saúde</h5>
+                            <p class="card-text">Descubra como as flores podem melhorar a sua saúde mental e física, trazendo mais cor e vida ao seu dia...</p>
+                            <a href="artigo-1.html" class="btn btn-outline-success mt-2 d-none d-md-inline-block">
+                                Ver artigo completo <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between small text-muted">
+                            <span>Autor: Maria</span>
+                            <span><i class="bi bi-calendar-event"></i> 14/10/2025</span>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="artigo-1.html#comentarios" class="text-decoration-none text-reset" onclick="event.stopPropagation();">
+                                <span class="comment-badge"><i class="bi bi-chat-left-text"></i> 5 comentários</span>
+                            </a>
+                            <span class="like-badge" data-like-id="artigo-1"><i class="bi bi-heart-fill text-danger"></i> <span class="like-count">12</span> gostos</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Artigo 2 -->
+            <div class="col">
+                <a href="artigo-2.html" class="text-decoration-none text-reset article-link">
+                    <div class="card h-100">
+                        <img src="imgs/imagem2.jpg" class="card-img-top" alt="Artigo 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Tigres e o seu habitat natural</h5>
+                            <p class="card-text">Conheça os majestosos tigres e explore os seus habitats naturais, comportamentos e ameaças ao longo do mundo...</p>
+                            <a href="artigo-2.html" class="btn btn-outline-success mt-2 d-none d-md-inline-block">
+                                Ver artigo completo <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between small text-muted">
+                            <span>Autor: João</span>
+                            <span><i class="bi bi-calendar-event"></i> 12/10/2025</span>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="artigo-2.html#comentarios" class="text-decoration-none text-reset" onclick="event.stopPropagation();">
+                                <span class="comment-badge"><i class="bi bi-chat-left-text"></i> 3 comentários</span>
+                            </a>
+                            <span class="like-badge" data-like-id="artigo-2"><i class="bi bi-heart-fill text-danger"></i> <span class="like-count">8</span> gostos</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Artigo 3 -->
+            <div class="col">
+                <a href="artigo-3.html" class="text-decoration-none text-reset article-link">
+                    <div class="card h-100">
+                        <img src="imgs/imagem3.jpg" class="card-img-top" alt="Artigo 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Sítios para visitar com a família</h5>
+                            <p class="card-text">Planeia as tuas férias com as melhores recomendações de destinos familiares, desde praias a castelos históricos...</p>
+                            <a href="artigo-3.html" class="btn btn-outline-success mt-2 d-none d-md-inline-block">
+                                Ver artigo completo <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between small text-muted">
+                            <span>Autor: Ana</span>
+                            <span><i class="bi bi-calendar-event"></i> 10/10/2025</span>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="artigo-3.html#comentarios" class="text-decoration-none text-reset" onclick="event.stopPropagation();">
+                                <span class="comment-badge"><i class="bi bi-chat-left-text"></i> 10 comentários</span>
+                            </a>
+                            <span class="like-badge" data-like-id="artigo-3"><i class="bi bi-heart-fill text-danger"></i> <span class="like-count">20</span> gostos</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            Rabbit Head Blog &copy; 2025
+        </div>
+    </footer>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
