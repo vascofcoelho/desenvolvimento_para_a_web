@@ -44,7 +44,11 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestão de Comentários</h2>
-        <a class="btn btn-secondary" href="articles.php">Voltar aos Artigos</a>
+        <?php if (!empty($role) && $role === 'moderator'): ?>
+            <a class="btn btn-secondary" href="../index.php">Voltar aos Artigos</a>
+        <?php else: ?>
+            <a class="btn btn-secondary" href="articles.php">Voltar aos Artigos</a>
+        <?php endif; ?>
     </div>
 
     <?php if (count($comments) === 0): ?>

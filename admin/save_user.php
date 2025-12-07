@@ -26,6 +26,19 @@ $last = trim($_POST['last_name'] ?? '');
 $role_new = trim($_POST['role'] ?? 'user');
 $password = $_POST['password'] ?? '';
 
+// Prevent admins from changing their own role
+if ($id > 0 && $id === $uid) {
+    // fetch current role and force it
+    $s = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+    $s->bind_param('i', $uid);
+    $s->execute();
+    $rr = $s->get_result()->fetch_assoc();
+    $s->close();
+    if ($rr && !empty($rr['role'])) {
+        $role_new = $rr['role'];
+    }
+}
+
 if ($id > 0) {
     // editar
     if ($password !== '') {

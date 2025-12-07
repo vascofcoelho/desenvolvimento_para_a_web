@@ -71,12 +71,18 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         </div>
         <div class="mb-3">
             <label class="form-label">Role</label>
-            <select name="role" class="form-select">
-                <option value="user" <?php if(($user['role'] ?? '') === 'user') echo 'selected'; ?>>User</option>
-                <option value="author" <?php if(($user['role'] ?? '') === 'author') echo 'selected'; ?>>Author</option>
-                <option value="moderator" <?php if(($user['role'] ?? '') === 'moderator') echo 'selected'; ?>>Moderator</option>
-                <option value="admin" <?php if(($user['role'] ?? '') === 'admin') echo 'selected'; ?>>Admin</option>
-            </select>
+            <?php if ($editing && (int)($user['id_user'] ?? 0) === $uid): ?>
+                <!-- Prevent user from changing their own role -->
+                <div class="form-control"><?php echo htmlspecialchars($user['role'] ?? 'user'); ?> <small class="text-muted">(Não pode alterar a sua própria role)</small></div>
+                <input type="hidden" name="role" value="<?php echo htmlspecialchars($user['role'] ?? 'user'); ?>">
+            <?php else: ?>
+                <select name="role" class="form-select">
+                    <option value="user" <?php if(($user['role'] ?? '') === 'user') echo 'selected'; ?>>User</option>
+                    <option value="author" <?php if(($user['role'] ?? '') === 'author') echo 'selected'; ?>>Author</option>
+                    <option value="moderator" <?php if(($user['role'] ?? '') === 'moderator') echo 'selected'; ?>>Moderator</option>
+                    <option value="admin" <?php if(($user['role'] ?? '') === 'admin') echo 'selected'; ?>>Admin</option>
+                </select>
+            <?php endif; ?>
         </div>
         <div>
             <button class="btn btn-primary" type="submit">Salvar</button>
