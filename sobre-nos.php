@@ -1,3 +1,6 @@
+<?php
+// sobre-nos.php - versão PHP de sobre-nos.html com parciais
+?>
 <!DOCTYPE html>
 <html lang="pt-pt">
 <head>
@@ -10,23 +13,7 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <img src="imgs/logo.png" alt="Logo" style="max-height: 50px;">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="index.html">Início</a>
-                    <a class="nav-link active" href="sobre-nos.html">Sobre Nós</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <?php require_once __DIR__ . '/partials/navbar.php'; ?>
 
     <!-- Conteúdo Sobre Nós -->
     <main class="container my-5">
@@ -51,32 +38,11 @@
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, arcu eget luctus gravida, nunc
                 lacus feugiat sem, in ultrices justo ipsum et mi.</p>
 
-                <h3 class="mt-4">Equipe</h3>
+                <h3 class="mt-4">Equipa</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Curabitur at orci vel mi
                 dictum fermentum.</p>
             </div>
         </div>
     </main>
 
-    <!-- Rodapé -->
-    <footer class="bg-dark text-white py-3 mt-5">
-        <div class="container">
-            <div class="d-flex flex-column flex-md-row align-items-center">
-                <div class="mb-2 mb-md-0 flex-md-fill text-md-start">
-                    <a href="index.html" class="text-white text-decoration-none me-3">Início</a>
-                    <a href="sobre-nos.html" class="text-white text-decoration-none me-3">Sobre Nós</a>
-                    <a href="https://github.com/vascofcoelho" target="_blank" class="text-white text-decoration-none">GitHub</a>
-                </div>
-                <div class="mb-2 mb-md-0 flex-md-fill text-center">
-                    <span>Rabbit Head Blog &copy; 2025</span>
-                </div>
-                <div class="flex-md-fill text-md-end">
-                    <a href="login.html" class="text-white text-decoration-none">Admin</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <?php require_once __DIR__ . '/partials/footer.php'; ?>
