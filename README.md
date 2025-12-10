@@ -13,7 +13,7 @@
 - `partials/navbar.php`, `partials/footer.php` — partials partilhados
 - `admin/` — backoffice (artigos, categorias, comentários, utilizadores)
 - `css/`, `js/`, `imgs/` — assets
-
+- `dump_db/` - dump da base de dados do laragon rabbit_head
 ## Autores
 
 - Vasco Coelho
