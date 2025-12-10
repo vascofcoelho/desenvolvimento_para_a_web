@@ -1,5 +1,4 @@
 <?php
-// profile.php - editar perfil do utilizador (só para o próprio)
 session_start();
 require_once __DIR__ . '/db.php';
 
@@ -92,8 +91,8 @@ if (!empty($_GET['error'])) $msg = $_GET['error'];
                     <input name="password_confirm" type="password" class="form-control">
                 </div>
                 <div>
-                    <button class="btn btn-primary">Salvar</button>
-                    <a class="btn btn-secondary" href="index.php">Cancelar</a>
+                    <button class="btn btn-success">Salvar</button>
+                    <a class="btn btn-outline-success" href="index.php">Cancelar</a>
                 </div>
             </form>
         </div>

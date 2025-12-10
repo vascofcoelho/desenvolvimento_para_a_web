@@ -1,5 +1,4 @@
 <?php
-// admin/register_user.php - formulário para criar/editar utilizadores
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -85,8 +84,8 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
             <?php endif; ?>
         </div>
         <div>
-            <button class="btn btn-primary" type="submit">Salvar</button>
-            <a class="btn btn-secondary" href="users.php">Cancelar</a>
+            <button class="btn btn-success" type="submit">Salvar</button>
+            <a class="btn btn-outline-success" href="users.php">Cancelar</a>
         </div>
     </form>
 </main>

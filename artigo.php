@@ -199,7 +199,7 @@ function e($s) { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8
                 <div class="col-12 col-lg-8">
                     <div class="d-flex justify-content-start gap-3 align-items-center">
                         <?php if (!empty($_SESSION['user_id'])): ?>
-                            <button id="like-btn" data-artigo="<?php echo $id_artigo; ?>" class="btn btn-link p-0">
+                            <button id="like-btn" data-artigo="<?php echo $id_artigo; ?>" class="btn btn-link p-0 text-success">
                                 <i id="like-icon" class="bi <?php echo $user_liked ? 'bi-heart-fill text-danger' : 'bi-heart'; ?>"></i>
                                 <span id="like-count"><?php echo (int)$likes; ?></span> gostos
                             </button>

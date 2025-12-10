@@ -1,5 +1,4 @@
 <?php
-// admin/save_user.php - handler para criar/editar utilizadores
 session_start();
 require_once __DIR__ . '/../db.php';
 

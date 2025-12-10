@@ -1,5 +1,4 @@
 <?php
-// admin/save_article.php - handler para criar/editar artigo
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -33,8 +32,15 @@ if ($role === 'author') {
 $id_categoria = isset($_POST['id_categoria']) && $_POST['id_categoria'] !== '' ? (int)$_POST['id_categoria'] : null;
 $slug = trim($_POST['URL_slug'] ?? '');
 
+// Server-side validation: título, conteúdo, autor e categoria são obrigatórios. Foto obrigatória ao criar novo artigo.
 if ($titulo === '' || $texto === '') {
     echo 'Título e conteúdo são obrigatórios.'; exit;
+}
+if (empty($autor) || $autor <= 0) {
+    echo 'Autor inválido.'; exit;
+}
+if (empty($id_categoria)) {
+    echo 'Categoria é obrigatória.'; exit;
 }
 
 function slugify($s){
@@ -60,6 +66,7 @@ while (true) {
     $slug = $base . '-' . $i; $i++;
 }
 
+// Handle photo upload
 $foto_val = null;
 if (!empty($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     $fn = $_FILES['foto']['name'];
@@ -74,6 +81,11 @@ if (!empty($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         echo 'Erro ao mover ficheiro.'; exit;
     }
     $foto_val = 'imgs/' . $newname;
+}
+
+// If creating a new article, photo must be provided
+if ($id === 0 && $foto_val === null) {
+    echo 'A imagem do artigo é obrigatória.'; exit;
 }
 
 if ($id > 0) {

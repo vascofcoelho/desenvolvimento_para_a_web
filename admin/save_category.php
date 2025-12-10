@@ -1,5 +1,4 @@
 <?php
-// admin/save_category.php - handler para criar/editar categoria
 session_start();
 require_once __DIR__ . '/../db.php';
 

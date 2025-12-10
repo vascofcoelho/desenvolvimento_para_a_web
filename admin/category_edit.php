@@ -1,5 +1,4 @@
 <?php
-// admin/category_edit.php - criar/editar categoria
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -51,8 +50,8 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
             <label class="form-label">Categoria</label>
             <input name="categoria" class="form-control" required value="<?php echo e($cat['categoria']); ?>">
         </div>
-        <button class="btn btn-primary">Guardar</button>
-        <a class="btn btn-secondary" href="categories.php">Voltar</a>
+        <button class="btn btn-success">Guardar</button>
+        <a class="btn btn-outline-success" href="categories.php">Voltar</a>
     </form>
 </main>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>

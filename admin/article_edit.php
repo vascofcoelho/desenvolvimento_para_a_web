@@ -1,5 +1,4 @@
 <?php
-// admin/article_edit.php - criar/editar artigo
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -100,8 +99,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         </div>
         <div class="mb-3">
             <label class="form-label">Categoria</label>
-            <select name="id_categoria" class="form-select">
-                <option value="">-- Nenhuma --</option>
+            <select name="id_categoria" class="form-select" required>
                 <?php foreach ($categories as $c): ?>
                     <option value="<?php echo e($c['id_categoria']); ?>" <?php echo ($article['id_categoria']==$c['id_categoria']) ? 'selected' : ''; ?>><?php echo e($c['categoria']); ?></option>
                 <?php endforeach; ?>
@@ -112,14 +110,14 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
             <?php if (!empty($article['foto'])): ?>
                 <div class="mb-2"><img src="../imgs/<?php echo e(basename($article['foto'])); ?>" style="max-height:120px;"></div>
             <?php endif; ?>
-            <input type="file" name="foto" accept="image/*" class="form-control">
+            <input type="file" name="foto" accept="image/*" class="form-control" <?php echo $id>0 ? '' : 'required'; ?>>
         </div>
         <div class="mb-3">
             <label class="form-label">Conteúdo</label>
             <textarea name="texto_artigo" rows="10" class="form-control"><?php echo e($article['texto_artigo']); ?></textarea>
         </div>
-        <button class="btn btn-primary">Guardar</button>
-        <a class="btn btn-secondary" href="articles.php">Voltar</a>
+        <button class="btn btn-success">Guardar</button>
+        <a class="btn btn-outline-success" href="articles.php">Voltar</a>
     </form>
 </main>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>

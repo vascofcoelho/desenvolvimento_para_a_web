@@ -1,5 +1,4 @@
 <?php
-// admin/categories.php - listagem de categorias (backoffice)
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -62,7 +61,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
                         <td><?php echo e($c['id_categoria']); ?></td>
                         <td><?php echo e($c['categoria']); ?></td>
                         <td class="text-end">
-                            <a class="btn btn-sm btn-primary" href="category_edit.php?id=<?php echo e($c['id_categoria']); ?>">Editar</a>
+                            <a class="btn btn-sm btn-success" href="category_edit.php?id=<?php echo e($c['id_categoria']); ?>">Editar</a>
                             <a class="btn btn-sm btn-danger" href="delete_category.php?id=<?php echo e($c['id_categoria']); ?>" onclick="return confirm('Apagar esta categoria? Os artigos vão ficar sem categoria.');">Apagar</a>
                         </td>
                     </tr>

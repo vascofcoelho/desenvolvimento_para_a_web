@@ -1,5 +1,4 @@
 <?php
-// like.php - toggle like for authenticated users (expects JSON POST)
 header('Content-Type: application/json; charset=utf-8');
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/db.php';

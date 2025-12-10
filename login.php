@@ -1,5 +1,4 @@
 <?php
-// login.php - simples form de login e handler (modo desenvolvimento)
 session_start();
 require_once __DIR__ . '/db.php';
 
@@ -86,6 +85,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username'];
             // If role is not present in row (older schema), default to 'user'
             $_SESSION['role'] = !empty($user['role']) ? $user['role'] : 'user';
+            // Load avatar for session (if Users.avatar exists)
+            try {
+                $conn2 = get_db();
+                $s2 = $conn2->prepare('SELECT avatar FROM Users WHERE id_user = ? LIMIT 1');
+                if ($s2) {
+                    $s2->bind_param('i', $_SESSION['user_id']);
+                    $s2->execute();
+                    $res2 = $s2->get_result();
+                    if ($r2 = $res2->fetch_assoc()) {
+                        $av = trim($r2['avatar'] ?? '');
+                        if (!empty($av)) {
+                            // compute base for root-relative paths
+                            $script = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+                            $parts = explode('/', trim($script, '/'));
+                            $base = '';
+                            if (count($parts) > 0 && $parts[0] !== '') $base = '/' . $parts[0];
+                            if (preg_match('#^https?://#i', $av)) {
+                                $_SESSION['avatar'] = $av;
+                            } else {
+                                // store raw path (without base) but also set session to raw for consistency
+                                $_SESSION['avatar'] = $av;
+                            }
+                        }
+                    }
+                    $s2->close();
+                }
+                $conn2->close();
+            } catch (Exception $e) {
+                // ignore avatar load errors
+            }
             // Se for admin, ir diretamente para o dashboard do admin
             if (!empty($user['role']) && $user['role'] === 'admin') {
                 header('Location: admin/index.php');
@@ -127,12 +156,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label class="form-label">Palavra-passe</label>
                     <input name="password" type="password" class="form-control" required>
                 </div>
-                <button class="btn btn-primary">Entrar</button>
+                <button class="btn btn-success">Entrar</button>
             </form>
+            <p class="mt-3">Não tem conta? <a href="register.php">Registar</a></p>
             <?php if (!empty($_GET['registered'])): ?>
                 <div class="alert alert-success mt-3">Registo efetuado com sucesso. Pode entrar com as suas credenciais.</div>
             <?php endif; ?>
-            <p class="mt-3 text-muted">Se não tiver utilizador para testes, utilize <strong>dev/dev</strong> (cria automaticamente um utilizador local).</p>
+            <!-- Dev hint removed in production-like UI -->
         </div>
     </div>
 </main>

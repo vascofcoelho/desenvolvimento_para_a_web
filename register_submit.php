@@ -1,5 +1,4 @@
 <?php
-// register_submit.php - handler para registo público
 require_once __DIR__ . '/db.php';
 session_start();
 

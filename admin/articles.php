@@ -1,5 +1,4 @@
 <?php
-// admin/articles.php - gestão de artigos (lista)
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -58,7 +57,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         <h2>Gestão de Artigos</h2>
         <div>
             <a class="btn btn-success" href="article_edit.php">Criar Novo Artigo</a>
-            <a class="btn btn-secondary ms-2" href="comments.php">Gestão de Comentários</a>
+            <a class="btn btn-success ms-2" href="comments.php">Gestão de Comentários</a>
         </div>
     </div>
 
@@ -86,17 +85,37 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
                         <td><?php echo e($a['categoria']); ?></td>
                         <td>
                             <?php
-                                $author_label = htmlspecialchars($a['author_username'] ?? ($a['autor'] ?? ''));
-                                if (!empty($a['author_first']) || !empty($a['author_last'])) {
-                                    $author_label = htmlspecialchars(trim(($a['author_first'] ?? '') . ' ' . ($a['author_last'] ?? '')) . ' (' . ($a['author_username'] ?? '') . ')');
-                                }
-                                echo $author_label;
+                                    $author_label = htmlspecialchars($a['author_username'] ?? ($a['autor'] ?? ''));
+                                    if (!empty($a['author_first']) || !empty($a['author_last'])) {
+                                        $author_label = htmlspecialchars(trim(($a['author_first'] ?? '') . ' ' . ($a['author_last'] ?? '')) . ' (' . ($a['author_username'] ?? '') . ')');
+                                    }
+                                    // Build avatar src as root-relative so it works from /admin/ pages
+                                    $author_avatar_src = '';
+                                    if (!empty($a['author_avatar'])) {
+                                        $av = trim($a['author_avatar']);
+                                        if (preg_match('#^https?://#i', $av)) {
+                                            $author_avatar_src = $av;
+                                        } else {
+                                            // Normalize to a root-relative path: compute project base from SCRIPT_NAME
+                                            $scriptPath = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+                                            $parts = explode('/', trim($scriptPath, '/'));
+                                            $base = '';
+                                            if (count($parts) > 0 && $parts[0] !== '') $base = '/' . $parts[0];
+                                            // If stored path starts with '/', leave it trimmed; otherwise ensure it does not duplicate slashes
+                                            $author_avatar_src = $base . '/' . ltrim($av, '/');
+                                        }
+                                    }
+                                    if (!empty($author_avatar_src)) {
+                                        echo '<img src="' . e($author_avatar_src) . '" style="width:32px;height:32px;border-radius:6px;object-fit:cover;margin-right:8px;"> ' . $author_label;
+                                    } else {
+                                        echo $author_label;
+                                    }
                             ?>
                         </td>
                         <td><?php echo e($a['data']); ?></td>
                         <td><?php if (!empty($a['foto'])): ?><img src="../imgs/<?php echo e(basename($a['foto'])); ?>" style="height:40px;"><?php endif; ?></td>
                         <td class="text-end">
-                            <a class="btn btn-sm btn-primary" href="article_edit.php?id=<?php echo e($a['id_artigo']); ?>">Editar</a>
+                            <a class="btn btn-sm btn-success" href="article_edit.php?id=<?php echo e($a['id_artigo']); ?>">Editar</a>
                             <a class="btn btn-sm btn-danger" href="delete_article.php?id=<?php echo e($a['id_artigo']); ?>" onclick="return confirm('Apagar este artigo?');">Apagar</a>
                         </td>
                     </tr>

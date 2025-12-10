@@ -1,5 +1,4 @@
 <?php
-// admin/comments.php - listagem e gestão de comentários
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -10,21 +9,37 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
-$role = 'user';
+$role = 'user'; $username = '';
 if ($r = $res->fetch_assoc()) $role = $r['role'] ?? 'user';
 $stmt->close();
 
-if ($role !== 'admin' && $role !== 'moderator') { echo 'Acesso negado.'; exit; }
+// allow admins, moderators, and authors (authors only for their own articles)
+if ($role !== 'admin' && $role !== 'moderator' && $role !== 'author') { echo 'Acesso negado.'; exit; }
 
 $comments = [];
-$sql = 'SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as data, u.username, a.titulo, a.URL_slug FROM Comentarios c LEFT JOIN Users u ON c.id_user = u.id_user LEFT JOIN Artigos a ON c.id_artigo = a.id_artigo ORDER BY c.data DESC';
-if ($res = $conn->query($sql)) {
+$sql = 'SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as data, u.username, a.titulo, a.URL_slug, a.autor as artigo_autor FROM Comentarios c LEFT JOIN Users u ON c.id_user = u.id_user LEFT JOIN Artigos a ON c.id_artigo = a.id_artigo ';
+if ($role === 'author') {
+    // authors see comments only for their own articles
+    $sql .= 'WHERE (a.autor = ? OR a.autor = ?) ';
+}
+$sql .= 'ORDER BY c.data DESC';
+if ($role === 'author') {
+    $q = $conn->prepare($sql);
+    $q->bind_param('is', $uid, $username);
+    $q->execute();
+    $res = $q->get_result();
     while ($row = $res->fetch_assoc()) $comments[] = $row;
     $res->free();
+    $q->close();
+} else {
+    if ($res = $conn->query($sql)) {
+        while ($row = $res->fetch_assoc()) $comments[] = $row;
+        $res->free();
+    }
 }
 
 function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -45,9 +60,9 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestão de Comentários</h2>
         <?php if (!empty($role) && $role === 'moderator'): ?>
-            <a class="btn btn-secondary" href="../index.php">Voltar aos Artigos</a>
+              <a class="btn btn-outline-success" href="../index.php">Voltar aos Artigos</a>
         <?php else: ?>
-            <a class="btn btn-secondary" href="articles.php">Voltar aos Artigos</a>
+              <a class="btn btn-outline-success" href="articles.php">Voltar aos Artigos</a>
         <?php endif; ?>
     </div>
 

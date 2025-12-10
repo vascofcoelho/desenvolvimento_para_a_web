@@ -1,5 +1,4 @@
 <?php
-// admin/delete_user.php - apagar utilizador (apenas administradores)
 session_start();
 require_once __DIR__ . '/../db.php';
 

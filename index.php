@@ -1,5 +1,4 @@
 <?php
-// index.php - versão PHP de index.html com parciais
 ?>
 <!DOCTYPE html>
 <html lang="pt-pt">
@@ -126,7 +125,7 @@
                             <span class="badge bg-success mb-3">Destaque</span>
                             <h2 class="card-title featured-title"><?php echo e($featured['titulo']); ?></h2>
                             <p class="card-text text-muted mb-3"><?php echo e(excerpt($featured['texto_artigo'], 220)); ?></p>
-                            <p class="card-text mb-4"><small class="text-muted"><i class="bi bi-person-circle"></i> <?php echo e($featured['author_label']); ?> • <i class="bi bi-calendar-event"></i> <?php echo e($featured['data']); ?></small></p>
+                            <p class="card-text mb-4"><small class="text-muted"> <?php echo e($featured['author_label']); ?> • <i class="bi bi-calendar-event"></i> <?php echo e($featured['data']); ?></small></p>
                         </div>
                     </div>
                 </a>
@@ -143,7 +142,7 @@
                                     <span class="badge bg-success mb-3">Destaque</span>
                                     <h2 class="card-title featured-title"><?php echo e($featured['titulo']); ?></h2>
                                     <p class="card-text text-muted mb-3"><?php echo e(excerpt($featured['texto_artigo'], 220)); ?></p>
-                                    <p class="card-text mb-4"><small class="text-muted"><i class="bi bi-person-circle"></i> <?php echo e($featured['author_label']); ?> • <i class="bi bi-calendar-event"></i> <?php echo e($featured['data']); ?></small></p>
+                                    <p class="card-text mb-4"><small class="text-muted"> <?php echo e($featured['author_label']); ?> • <i class="bi bi-calendar-event"></i> <?php echo e($featured['data']); ?></small></p>
                                 </div>
                                 <div class="featured-actions">
                                     <a href="<?php echo e($feat_link); ?>" class="btn btn-success btn-lg">
@@ -177,7 +176,7 @@
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo e($a['titulo']); ?></h5>
                                 <p class="card-text"><?php echo e(excerpt($a['texto_artigo'], 120)); ?></p>
-                                <a href="<?php echo e($link); ?>" class="btn btn-outline-success mt-2 d-none d-md-inline-block">
+                                <a href="<?php echo e($link); ?>" class="btn btn-success mt-2 d-none d-md-inline-block">
                                     Ver artigo completo <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>

@@ -1,5 +1,4 @@
 <?php
-// register.php - página pública de registo de utilizadores
 require_once __DIR__ . '/db.php';
 session_start();
 
@@ -51,7 +50,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                     <label class="form-label">Sobrenome</label>
                     <input name="last_name" class="form-control">
                 </div>
-                <button class="btn btn-primary">Registar</button>
+                <button class="btn btn-success">Registar</button>
             </form>
             <p class="mt-3">Já tem conta? <a href="login.php">Entrar</a></p>
         </div>

@@ -1,5 +1,4 @@
 <?php
-// admin/index.php - dashboard admin
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -38,16 +37,16 @@ if ($role !== 'admin') { echo 'Acesso negado. Só administradores podem aceder a
 
     <div class="row g-3">
         <div class="col-12 col-md-6 col-lg-3">
-            <a class="btn btn-outline-primary w-100 py-3" href="articles.php">Gestão de Artigos</a>
+            <a class="btn btn-success w-100 py-3" href="articles.php">Gestão de Artigos</a>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
-            <a class="btn btn-outline-secondary w-100 py-3" href="comments.php">Gestão de Comentários</a>
+            <a class="btn btn-success w-100 py-3" href="comments.php">Gestão de Comentários</a>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
-            <a class="btn btn-outline-success w-100 py-3" href="categories.php">Gestão de Categorias</a>
+            <a class="btn btn-success w-100 py-3" href="categories.php">Gestão de Categorias</a>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
-            <a class="btn btn-outline-warning w-100 py-3" href="users.php">Gestão de Utilizadores</a>
+            <a class="btn btn-success w-100 py-3" href="users.php">Gestão de Utilizadores</a>
         </div>
     </div>
 

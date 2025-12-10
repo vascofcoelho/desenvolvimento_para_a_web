@@ -1,5 +1,4 @@
 <?php
-// logout.php - encerra sessão e redireciona
 session_start();
 session_unset();
 session_destroy();

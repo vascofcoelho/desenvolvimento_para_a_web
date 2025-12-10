@@ -1,5 +1,4 @@
 <?php
-// admin/users.php - listagem e gestão de utilizadores
 session_start();
 require_once __DIR__ . '/../db.php';
 
@@ -43,7 +42,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestão de Utilizadores</h2>
-        <a class="btn btn-success" href="register_user.php">Criar Novo Utilizador</a>
+            <a class="btn btn-success" href="register_user.php">Criar Novo Utilizador</a>
     </div>
 
     <?php if (count($users) === 0): ?>
@@ -70,7 +69,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
                         <td><?php echo e(trim(($u['first_name'] . ' ' . $u['last_name']))); ?></td>
                         <td><?php echo htmlspecialchars($u['role'] ?? 'user'); ?></td>
                         <td class="text-end">
-                            <a class="btn btn-sm btn-primary" href="register_user.php?id=<?php echo e($u['id_user']); ?>">Editar</a>
+                            <a class="btn btn-sm btn-success" href="register_user.php?id=<?php echo e($u['id_user']); ?>">Editar</a>
                             <a class="btn btn-sm btn-danger" href="delete_user.php?id=<?php echo e($u['id_user']); ?>" onclick="return confirm('Apagar este utilizador?');">Apagar</a>
                         </td>
                     </tr>

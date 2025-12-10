@@ -1,5 +1,4 @@
 <?php
-// save_profile.php - handler para atualizar perfil do utilizador
 session_start();
 require_once __DIR__ . '/db.php';
 
@@ -99,6 +98,11 @@ $stmt->close();
 if ($ok) {
     // Atualizar sessão com novo username
     $_SESSION['username'] = $username;
+    // Atualizar avatar em sessão se foi enviado
+    if ($hasAvatarCol && isset($avatarWebPath)) {
+        // store raw path (e.g. 'imgs/avatars/...') in session; navbar will prefix base when rendering
+        $_SESSION['avatar'] = $avatarWebPath;
+    }
     header('Location: profile.php?success=1'); exit;
 } else {
     header('Location: profile.php?error=' . urlencode('Erro ao salvar perfil.')); exit;

@@ -10,16 +10,35 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
-$stmt->bind_param('i', $uid);
-$stmt->execute();
-$r = $stmt->get_result()->fetch_assoc();
-$stmt->close();
-$role = $r['role'] ?? 'user';
-if ($role !== 'admin' && $role !== 'moderator') { echo 'Acesso negado.'; exit; }
+ $stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+ $stmt->bind_param('i', $uid);
+ $stmt->execute();
+ $r = $stmt->get_result()->fetch_assoc();
+ $stmt->close();
+ $role = $r['role'] ?? 'user';
+ $username = $r['username'] ?? '';
+ if ($role !== 'admin' && $role !== 'moderator' && $role !== 'author') { echo 'Acesso negado.'; exit; }
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) { header('Location: comments.php'); exit; }
+
+// If author, ensure the comment belongs to an article authored by them
+if ($role === 'author') {
+    $s = $conn->prepare('SELECT a.autor FROM Comentarios c LEFT JOIN Artigos a ON c.id_artigo = a.id_artigo WHERE c.id_comentario = ? LIMIT 1');
+    $s->bind_param('i', $id);
+    $s->execute();
+    $row = $s->get_result()->fetch_assoc();
+    $s->close();
+    if (!$row) { echo 'Comentário não encontrado.'; exit; }
+    $art_autor = $row['autor'];
+    $allow = false;
+    if (is_numeric($art_autor)) {
+        if ((int)$art_autor === $uid) $allow = true;
+    } else {
+        if ($art_autor === $username) $allow = true;
+    }
+    if (!$allow) { echo 'Acesso negado.'; exit; }
+}
 
 $del = $conn->prepare('DELETE FROM Comentarios WHERE id_comentario = ?');
 $del->bind_param('i', $id);
