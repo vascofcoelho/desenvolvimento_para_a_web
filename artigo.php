@@ -11,11 +11,12 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 // Verifica role do utilizador (para mostrar controlos de moderação)
 $can_moderate = false;
 $current_username = '';
-if (!empty($_SESSION['user_id'])) {
+$role = 'user';
+$current_user_id = !empty($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;
+if ($current_user_id) {
     $check = get_db();
     $stmt = $check->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
-    $uid = (int) $_SESSION['user_id'];
-    $stmt->bind_param('i', $uid);
+    $stmt->bind_param('i', $current_user_id);
     $stmt->execute();
     $r = $stmt->get_result()->fetch_assoc();
     if ($r) {
@@ -70,6 +71,7 @@ if (!empty($article['foto'])) {
 // Resolve author display (name + avatar). The `autor` column may store user id or legacy username.
 $author_name = $article['autor'] ?? '';
 $author_avatar = '';
+$is_author_of_article = false;
 if (!empty($article['autor'])) {
     if (is_numeric($article['autor'])) {
         $s = $conn->prepare('SELECT username, first_name, last_name, avatar FROM Users WHERE id_user = ? LIMIT 1');
@@ -83,6 +85,8 @@ if (!empty($article['autor'])) {
                 $av = trim($ur['avatar']);
                 $author_avatar = (preg_match('#^https?://#i', $av) || strpos($av, '/') === 0) ? $av : ltrim($av, '/');
             }
+            // Se o utilizador atual for autor deste artigo, autor também pode moderar
+            if ($current_user_id && (int)$article['autor'] === $current_user_id) $is_author_of_article = true;
         }
         $s->close();
     } else {
@@ -96,9 +100,16 @@ if (!empty($article['autor'])) {
                 $av = trim($ur['avatar']);
                 $author_avatar = (preg_match('#^https?://#i', $av) || strpos($av, '/') === 0) ? $av : ltrim($av, '/');
             }
+            // O campo autor pode ser username antigo
+            if ($current_user_id && $current_username && $article['autor'] === $current_username) $is_author_of_article = true;
         }
         $s->close();
     }
+}
+
+// Autores podem moderar comentários apenas nos seus próprios artigos
+if (!$can_moderate && $role === 'author' && $is_author_of_article) {
+    $can_moderate = true;
 }
 
 // Likes count

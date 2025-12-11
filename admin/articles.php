@@ -57,6 +57,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         <h2>Gestão de Artigos</h2>
         <div>
             <a class="btn btn-success" href="article_edit.php">Criar Novo Artigo</a>
+            <a class="btn btn-success ms-2" href="../estatisticas.php">Estatísticas</a>
             <a class="btn btn-success ms-2" href="comments.php">Gestão de Comentários</a>
         </div>
     </div>

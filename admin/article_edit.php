@@ -75,10 +75,15 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         <div class="mb-3">
             <label class="form-label">Autor</label>
             <?php
-            // Load users for selection
+            // Load users for selection (only authors)
             $users = [];
-            $ures = $conn->query('SELECT id_user, username, first_name, last_name FROM Users ORDER BY username');
+            $ustmt = $conn->prepare('SELECT id_user, username, first_name, last_name FROM Users WHERE role = ? ORDER BY username');
+            $author_role = 'author';
+            $ustmt->bind_param('s', $author_role);
+            $ustmt->execute();
+            $ures = $ustmt->get_result();
             if ($ures) { while ($u = $ures->fetch_assoc()) $users[] = $u; $ures->free(); }
+            $ustmt->close();
             $selected_author = (int)($article['autor'] ?? 0);
             if ($role === 'author') {
                 // authors must be themselves

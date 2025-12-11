@@ -48,6 +48,9 @@ if ($role !== 'admin') { echo 'Acesso negado. Só administradores podem aceder a
         <div class="col-12 col-md-6 col-lg-3">
             <a class="btn btn-success w-100 py-3" href="users.php">Gestão de Utilizadores</a>
         </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <a class="btn btn-success w-100 py-3" href="../estatisticas.php">Estatísticas</a>
+        </div>
     </div>
 
 </main>

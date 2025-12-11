@@ -20,7 +20,11 @@ $stmt->close();
 if ($role !== 'admin') { echo 'Acesso negado.'; exit; }
 
 $cats = [];
-$sql = 'SELECT id_categoria, categoria FROM Categorias ORDER BY categoria ASC';
+$sql = 'SELECT c.id_categoria, c.categoria, COUNT(a.id_artigo) as posts_count 
+        FROM Categorias c 
+        LEFT JOIN Artigos a ON c.id_categoria = a.id_categoria 
+        GROUP BY c.id_categoria, c.categoria 
+        ORDER BY c.categoria ASC';
 if ($res = $conn->query($sql)) { while ($c = $res->fetch_assoc()) $cats[] = $c; $res->free(); }
 
 function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -52,6 +56,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
                     <tr>
                         <th>ID</th>
                         <th>Categoria</th>
+                        <th class="text-center">Posts</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -60,6 +65,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
                     <tr>
                         <td><?php echo e($c['id_categoria']); ?></td>
                         <td><?php echo e($c['categoria']); ?></td>
+                        <td class="text-center"><?php echo (int)$c['posts_count']; ?></td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-success" href="category_edit.php?id=<?php echo e($c['id_categoria']); ?>">Editar</a>
                             <a class="btn btn-sm btn-danger" href="delete_category.php?id=<?php echo e($c['id_categoria']); ?>" onclick="return confirm('Apagar esta categoria? Os artigos vão ficar sem categoria.');">Apagar</a>
