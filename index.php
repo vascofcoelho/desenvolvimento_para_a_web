@@ -116,19 +116,6 @@
 
             <?php if ($featured): ?>
             <div class="mb-5">
-                <a href="<?php echo e($feat_link); ?>" class="text-decoration-none text-reset featured-link-mobile d-md-none">
-                    <div class="card featured-article">
-                        <?php if ($feat_img): ?>
-                            <img src="<?php echo e($feat_img); ?>" class="card-img-top featured-image-mobile" alt="<?php echo e($featured['titulo']); ?>">
-                        <?php endif; ?>
-                        <div class="card-body featured-body">
-                            <span class="badge bg-success mb-3">Destaque</span>
-                            <h2 class="card-title featured-title"><?php echo e($featured['titulo']); ?></h2>
-                            <p class="card-text text-muted mb-3"><?php echo e(excerpt($featured['texto_artigo'], 220)); ?></p>
-                            <p class="card-text mb-4"><small class="text-muted"> <?php echo e($featured['author_label']); ?> • <i class="bi bi-calendar-event"></i> <?php echo e($featured['data']); ?></small></p>
-                        </div>
-                    </div>
-                </a>
                 <div class="card featured-article d-none d-md-block">
                     <div class="row g-0">
                         <div class="col-md-6">
