@@ -118,6 +118,65 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 2rem;
+    position: relative;
+}
+
+.featured-article {
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-article .card-text {
+    position: relative;
+}
+
+.featured-article .card-body {
+    position: relative;
+}
+
+/* Garantir que o autor não apareça antes do card */
+.mb-5 {
+    position: relative;
+}
+
+.mb-5 > *:first-child {
+    position: relative;
+}
+
+.mb-5 .card-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* Garantir que nenhum conteúdo apareça antes do card featured */
+.mb-5::before {
+    content: none;
+    display: none;
+}
+
+.featured-article .card-body .card-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Garantir que o autor só apareça dentro do card-body */
+.featured-article .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+.featured-article .card-body .card-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* Garantir que nada apareça antes do card */
+.container .mb-5:first-child {
+    position: relative;
+}
+
+.container .mb-5:first-child::before {
+    content: none;
+    display: none;
 }
 
 .featured-title {

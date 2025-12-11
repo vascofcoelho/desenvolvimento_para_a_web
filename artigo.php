@@ -193,7 +193,36 @@ function e($s) { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8
                     <i class="bi bi-person-circle" style="font-size:1.6rem;"></i>
                 <?php endif; ?>
                 <div>
-                    <div><?php echo e($author_name); ?></div>
+                    <?php 
+                    // Determinar ID do autor para o link
+                    $author_link_id = '';
+                    if (!empty($article['autor'])) {
+                        if (is_numeric($article['autor'])) {
+                            $author_link_id = '?id=' . (int)$article['autor'];
+                        } else {
+                            // Se for username, buscar ID
+                            $s = $conn->prepare('SELECT id_user FROM Users WHERE username = ? LIMIT 1');
+                            $s->bind_param('s', $article['autor']);
+                            $s->execute();
+                            $ur = $s->get_result()->fetch_assoc();
+                            if ($ur) {
+                                $author_link_id = '?id=' . (int)$ur['id_user'];
+                            } else {
+                                $author_link_id = '?username=' . urlencode($article['autor']);
+                            }
+                            $s->close();
+                        }
+                    }
+                    ?>
+                    <div>
+                        <?php if ($author_link_id): ?>
+                            <a href="perfil_autor.php<?php echo e($author_link_id); ?>" class="text-decoration-none text-reset">
+                                <strong><?php echo e($author_name); ?></strong> <i class="bi bi-box-arrow-up-right" style="font-size:0.8rem;"></i>
+                            </a>
+                        <?php else: ?>
+                            <?php echo e($author_name); ?>
+                        <?php endif; ?>
+                    </div>
                     <div class="text-muted"><i class="bi bi-calendar-event"></i> <?php echo e($article['data']); ?></div>
                 </div>
             </div>

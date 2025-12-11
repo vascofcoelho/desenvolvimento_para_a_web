@@ -15,6 +15,7 @@ $username = trim($_POST['username'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $first = trim($_POST['first_name'] ?? '');
 $last = trim($_POST['last_name'] ?? '');
+$biografia = trim($_POST['biografia'] ?? '');
 $password = $_POST['password'] ?? '';
 $password_confirm = $_POST['password_confirm'] ?? '';
 
@@ -72,25 +73,56 @@ if (!$hasAvatarCol && $avatarFilename !== null) {
     $hasAvatarCol = true;
 }
 
+// Ensure biografia column exists; add if missing
+$colStmt2 = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'biografia'");
+$colStmt2->execute();
+$colRes2 = $colStmt2->get_result();
+$hasBiografiaCol = false;
+if ($colRes2 && ($cr2 = $colRes2->fetch_assoc())) { $hasBiografiaCol = ((int)$cr2['cnt'] > 0); }
+$colStmt2->close();
+if (!$hasBiografiaCol) {
+    // try to add column (best-effort)
+    try {
+        $conn->query("ALTER TABLE Users ADD COLUMN biografia TEXT DEFAULT NULL");
+        $hasBiografiaCol = true;
+    } catch (Exception $e) {
+        // Ignore if already exists or error
+    }
+}
+
+// Build UPDATE query dynamically based on what fields are available
+$updateFields = ['username', 'email', 'first_name', 'last_name'];
+$updateValues = [$username, $email, $first, $last];
+$types = 'ssss';
+
 if ($password !== '') {
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $salt = '';
-    if ($hasAvatarCol && isset($avatarWebPath)) {
-        $stmt = $conn->prepare('UPDATE Users SET username = ?, email = ?, first_name = ?, last_name = ?, password = ?, salt = ?, avatar = ? WHERE id_user = ?');
-        $stmt->bind_param('sssssssi', $username, $email, $first, $last, $hash, $salt, $avatarWebPath, $uid);
-    } else {
-        $stmt = $conn->prepare('UPDATE Users SET username = ?, email = ?, first_name = ?, last_name = ?, password = ?, salt = ? WHERE id_user = ?');
-        $stmt->bind_param('ssssssi', $username, $email, $first, $last, $hash, $salt, $uid);
-    }
-} else {
-    if ($hasAvatarCol && isset($avatarWebPath)) {
-        $stmt = $conn->prepare('UPDATE Users SET username = ?, email = ?, first_name = ?, last_name = ?, avatar = ? WHERE id_user = ?');
-        $stmt->bind_param('sssssi', $username, $email, $first, $last, $avatarWebPath, $uid);
-    } else {
-        $stmt = $conn->prepare('UPDATE Users SET username = ?, email = ?, first_name = ?, last_name = ? WHERE id_user = ?');
-        $stmt->bind_param('ssssi', $username, $email, $first, $last, $uid);
-    }
+    $updateFields[] = 'password';
+    $updateFields[] = 'salt';
+    $updateValues[] = $hash;
+    $updateValues[] = $salt;
+    $types .= 'ss';
 }
+
+if ($hasAvatarCol && isset($avatarWebPath)) {
+    $updateFields[] = 'avatar';
+    $updateValues[] = $avatarWebPath;
+    $types .= 's';
+}
+
+if ($hasBiografiaCol) {
+    $updateFields[] = 'biografia';
+    $updateValues[] = $biografia;
+    $types .= 's';
+}
+
+$setClause = implode(' = ?, ', $updateFields) . ' = ?';
+$sql = "UPDATE Users SET $setClause WHERE id_user = ?";
+$updateValues[] = $uid;
+$types .= 'i';
+$stmt = $conn->prepare($sql);
+$stmt->bind_param($types, ...$updateValues);
 
 $ok = $stmt->execute();
 $stmt->close();

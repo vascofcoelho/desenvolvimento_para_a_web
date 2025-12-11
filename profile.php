@@ -16,16 +16,39 @@ $colRes = $colStmt->get_result();
 if ($colRes && ($cr = $colRes->fetch_assoc())) { $hasAvatar = ((int)$cr['cnt'] > 0); }
 $colStmt->close();
 
-if ($hasAvatar) {
-    $stmt = $conn->prepare('SELECT id_user, username, email, first_name, last_name, avatar FROM Users WHERE id_user = ? LIMIT 1');
-} else {
-    $stmt = $conn->prepare('SELECT id_user, username, email, first_name, last_name FROM Users WHERE id_user = ? LIMIT 1');
+$hasBiografia = false;
+$colStmt2 = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'biografia'");
+$colStmt2->execute();
+$colRes2 = $colStmt2->get_result();
+if ($colRes2 && ($cr2 = $colRes2->fetch_assoc())) { $hasBiografia = ((int)$cr2['cnt'] > 0); }
+$colStmt2->close();
+
+// Se não existe, criar o campo biografia
+if (!$hasBiografia) {
+    try {
+        $conn->query("ALTER TABLE Users ADD COLUMN biografia TEXT DEFAULT NULL");
+        $hasBiografia = true;
+    } catch (Exception $e) {
+        // Ignore if already exists or error
+    }
 }
+
+// Buscar role do utilizador
+$role = 'user';
+$selectFields = 'id_user, username, email, first_name, last_name';
+if ($hasAvatar) $selectFields .= ', avatar';
+if ($hasBiografia) $selectFields .= ', biografia, role';
+
+$stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM Users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
 $user = $res->fetch_assoc() ?: null;
 $stmt->close();
+
+if ($user) {
+    $role = $user['role'] ?? 'user';
+}
 
 if (!$user) { echo 'Utilizador não encontrado.'; exit; }
 
@@ -80,6 +103,15 @@ if (!empty($_GET['error'])) $msg = $_GET['error'];
                     <label class="form-label">Foto de Perfil</label>
                     <input name="avatar" type="file" class="form-control" accept="image/*">
                 </div>
+                <?php if ($role === 'author'): ?>
+                    <hr>
+                    <h5 class="mb-3">Biografia do Autor</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Biografia</label>
+                        <textarea name="biografia" class="form-control" rows="5" placeholder="Escreva uma pequena biografia sobre si..."><?php echo e($user['biografia'] ?? ''); ?></textarea>
+                        <small class="text-muted">Esta biografia será visível no seu perfil público.</small>
+                    </div>
+                <?php endif; ?>
                 <hr>
                 <p class="text-muted small">Deixe as palavras-passe em branco para manter a atual.</p>
                 <div class="mb-3">
