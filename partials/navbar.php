@@ -4,15 +4,18 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../db.php';
 
 // Calcular base do site (pasta do projecto na URL) para criar links root-relative
+// Fix for PHP built-in server
 $script = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-$parts = explode('/', trim($script, '/'));
-$base = '';
-if (count($parts) > 0 && $parts[0] !== '') {
-    $base = '/' . $parts[0];
-}
+$scriptDir = dirname($script);
+$base = ($scriptDir === '/' || $scriptDir === '.') ? '' : $scriptDir;
+
 function href($path) {
     global $base;
-    return $base . '/' . ltrim($path, '/');
+    $path = ltrim($path, '/');
+    if (empty($base)) {
+        return '/' . $path;
+    }
+    return rtrim($base, '/') . '/' . $path;
 }
 ?>
 <nav class="navbar navbar-expand-lg bg-body-tertiary bg-light">
