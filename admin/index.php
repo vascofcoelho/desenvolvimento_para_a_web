@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();

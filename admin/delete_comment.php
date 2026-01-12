@@ -10,7 +10,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
- $stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+ $stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
  $stmt->bind_param('i', $uid);
  $stmt->execute();
  $r = $stmt->get_result()->fetch_assoc();
@@ -24,7 +24,7 @@ if ($id <= 0) { header('Location: comments.php'); exit; }
 
 // If author, ensure the comment belongs to an article authored by them
 if ($role === 'author') {
-    $s = $conn->prepare('SELECT a.autor FROM Comentarios c LEFT JOIN Artigos a ON c.id_artigo = a.id_artigo WHERE c.id_comentario = ? LIMIT 1');
+    $s = $conn->prepare('SELECT a.autor FROM comentarios c LEFT JOIN artigos a ON c.id_artigo = a.id_artigo WHERE c.id_comentario = ? LIMIT 1');
     $s->bind_param('i', $id);
     $s->execute();
     $row = $s->get_result()->fetch_assoc();
@@ -40,7 +40,7 @@ if ($role === 'author') {
     if (!$allow) { echo 'Acesso negado.'; exit; }
 }
 
-$del = $conn->prepare('DELETE FROM Comentarios WHERE id_comentario = ?');
+$del = $conn->prepare('DELETE FROM comentarios WHERE id_comentario = ?');
 $del->bind_param('i', $id);
 $del->execute();
 $del->close();

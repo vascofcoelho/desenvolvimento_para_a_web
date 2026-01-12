@@ -14,7 +14,7 @@ if (empty($_SESSION['user_id'])) {
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
 
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $r = $stmt->get_result()->fetch_assoc();
@@ -32,12 +32,12 @@ if ($role !== 'admin' && $role !== 'author') {
 
 $articles = [];
 $sql = 'SELECT a.id_artigo, a.titulo, a.URL_slug,
-        (SELECT COUNT(*) FROM Likes l WHERE l.id_artigo = a.id_artigo) AS likes_count,
-        (SELECT COUNT(*) FROM Comentarios c WHERE c.id_artigo = a.id_artigo) AS comments_count,
+        (SELECT COUNT(*) FROM likes l WHERE l.id_artigo = a.id_artigo) AS likes_count,
+        (SELECT COUNT(*) FROM comentarios c WHERE c.id_artigo = a.id_artigo) AS comments_count,
         DATE_FORMAT(a.data, "%d/%m/%Y") as data,
         c.categoria
-        FROM Artigos a
-        LEFT JOIN Categorias c ON a.id_categoria = c.id_categoria';
+        FROM artigos a
+        LEFT JOIN categorias c ON a.id_categoria = c.id_categoria';
 
 if ($role === 'author') {
     $sql .= ' WHERE (a.autor = ? OR a.autor = ?) ORDER BY a.data DESC';

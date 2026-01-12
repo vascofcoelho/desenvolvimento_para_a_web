@@ -25,7 +25,7 @@ $user_id = (int) $_SESSION['user_id'];
 $conn = get_db();
 
 // Verifica se já existe
-$stmt = $conn->prepare('SELECT id_like FROM Likes WHERE id_artigo = ? AND id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT id_like FROM likes WHERE id_artigo = ? AND id_user = ? LIMIT 1');
 $stmt->bind_param('ii', $id_artigo, $user_id);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -35,13 +35,13 @@ $stmt->close();
 $ok = true;
 $liked = false;
 if ($exists) {
-    $del = $conn->prepare('DELETE FROM Likes WHERE id_artigo = ? AND id_user = ?');
+    $del = $conn->prepare('DELETE FROM likes WHERE id_artigo = ? AND id_user = ?');
     $del->bind_param('ii', $id_artigo, $user_id);
     $ok = $del->execute();
     $del->close();
     $liked = false;
 } else {
-    $ins = $conn->prepare('INSERT INTO Likes (id_user, id_artigo) VALUES (?, ?)');
+    $ins = $conn->prepare('INSERT INTO likes (id_user, id_artigo) VALUES (?, ?)');
     $ins->bind_param('ii', $user_id, $id_artigo);
     $ok = $ins->execute();
     $ins->close();
@@ -53,7 +53,7 @@ if (!$ok) {
     exit;
 }
 
-$cstmt = $conn->prepare('SELECT COUNT(*) AS cnt FROM Likes WHERE id_artigo = ?');
+$cstmt = $conn->prepare('SELECT COUNT(*) AS cnt FROM likes WHERE id_artigo = ?');
 $cstmt->bind_param('i', $id_artigo);
 $cstmt->execute();
 $cres = $cstmt->get_result();

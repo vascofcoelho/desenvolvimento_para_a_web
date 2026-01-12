@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -23,7 +23,7 @@ if ($role !== 'admin') { echo 'Acesso negado.'; exit; }
  $user = ['id_user'=>0,'username'=>'','email'=>'','first_name'=>'','last_name'=>'','role'=>'user'];
 if (!empty($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $stmt = $conn->prepare('SELECT id_user, username, email, first_name, last_name, role FROM Users WHERE id_user = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT id_user, username, email, first_name, last_name, role FROM users WHERE id_user = ? LIMIT 1');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $res = $stmt->get_result();

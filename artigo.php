@@ -15,7 +15,7 @@ $role = 'user';
 $current_user_id = !empty($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;
 if ($current_user_id) {
     $check = get_db();
-    $stmt = $check->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+    $stmt = $check->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
     $stmt->bind_param('i', $current_user_id);
     $stmt->execute();
     $r = $stmt->get_result()->fetch_assoc();
@@ -39,7 +39,7 @@ if ($slug === '') {
 $conn = get_db();
 
 // Busca artigo por URL_slug
-$sql = "SELECT id_artigo, titulo, texto_artigo, autor, DATE_FORMAT(data, '%d/%m/%Y') as data, foto FROM Artigos WHERE URL_slug = ? LIMIT 1";
+$sql = "SELECT id_artigo, titulo, texto_artigo, autor, DATE_FORMAT(data, '%d/%m/%Y') as data, foto FROM artigos WHERE URL_slug = ? LIMIT 1";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('s', $slug);
 $stmt->execute();
@@ -74,7 +74,7 @@ $author_avatar = '';
 $is_author_of_article = false;
 if (!empty($article['autor'])) {
     if (is_numeric($article['autor'])) {
-        $s = $conn->prepare('SELECT username, first_name, last_name, avatar FROM Users WHERE id_user = ? LIMIT 1');
+        $s = $conn->prepare('SELECT username, first_name, last_name, avatar FROM users WHERE id_user = ? LIMIT 1');
         $aid = (int)$article['autor'];
         $s->bind_param('i', $aid);
         $s->execute();
@@ -90,7 +90,7 @@ if (!empty($article['autor'])) {
         }
         $s->close();
     } else {
-        $s = $conn->prepare('SELECT username, first_name, last_name, avatar FROM Users WHERE username = ? LIMIT 1');
+        $s = $conn->prepare('SELECT username, first_name, last_name, avatar FROM users WHERE username = ? LIMIT 1');
         $s->bind_param('s', $article['autor']);
         $s->execute();
         $ur = $s->get_result()->fetch_assoc();
@@ -113,7 +113,7 @@ if (!$can_moderate && $role === 'author' && $is_author_of_article) {
 }
 
 // Likes count
-$sql = "SELECT COUNT(*) as cnt FROM Likes WHERE id_artigo = ?";
+$sql = "SELECT COUNT(*) as cnt FROM likes WHERE id_artigo = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('i', $id_artigo);
 $stmt->execute();
@@ -124,7 +124,7 @@ $stmt->close();
 // Verifica se o user atual já deu like (se estiver autenticado)
 $user_liked = false;
 if (!empty($_SESSION['user_id'])) {
-    $sql = "SELECT 1 FROM Likes WHERE id_artigo = ? AND id_user = ? LIMIT 1";
+    $sql = "SELECT 1 FROM likes WHERE id_artigo = ? AND id_user = ? LIMIT 1";
     $stmt = $conn->prepare($sql);
     $uid = (int) $_SESSION['user_id'];
     $stmt->bind_param('ii', $id_artigo, $uid);
@@ -137,7 +137,7 @@ if (!empty($_SESSION['user_id'])) {
 // Se utilizador autenticado, buscar avatar para mostrar junto ao formulário
 $my_avatar = '';
 if (!empty($_SESSION['user_id'])) {
-    $stmt = $conn->prepare('SELECT avatar FROM Users WHERE id_user = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT avatar FROM users WHERE id_user = ? LIMIT 1');
     $uid = (int) $_SESSION['user_id'];
     $stmt->bind_param('i', $uid);
     $stmt->execute();
@@ -151,8 +151,8 @@ if (!empty($_SESSION['user_id'])) {
 
 // Comentários (junta com Users para mostrar nome)
 $sql = "SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, '%d/%m/%Y %H:%i') as data, u.username, u.avatar
-    FROM Comentarios c
-    LEFT JOIN Users u ON c.id_user = u.id_user
+    FROM comentarios c
+    LEFT JOIN users u ON c.id_user = u.id_user
     WHERE c.id_artigo = ?
     ORDER BY c.data DESC";
 $stmt = $conn->prepare($sql);

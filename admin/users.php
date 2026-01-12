@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -22,7 +22,7 @@ if ($role !== 'admin') {
 }
 
 $users = [];
-$sql = 'SELECT id_user, username, email, first_name, last_name, role FROM Users ORDER BY username';
+$sql = 'SELECT id_user, username, email, first_name, last_name, role FROM users ORDER BY username';
 if ($res = $conn->query($sql)) { while ($u = $res->fetch_assoc()) $users[] = $u; $res->free(); }
 
 function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }

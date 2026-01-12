@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -20,7 +20,7 @@ $stmt->close();
 if ($role !== 'admin' && $role !== 'author') { echo 'Acesso negado. É necessário ser administrador ou autor.'; exit; }
 
 $articles = [];
-$sql = 'SELECT a.id_artigo, a.titulo, a.autor, DATE_FORMAT(a.data, "%d/%m/%Y %H:%i") as data, a.URL_slug, c.categoria, a.foto, u.username as author_username, u.first_name as author_first, u.last_name as author_last, u.avatar as author_avatar FROM Artigos a LEFT JOIN Categorias c ON a.id_categoria = c.id_categoria LEFT JOIN Users u ON a.autor = u.id_user '
+$sql = 'SELECT a.id_artigo, a.titulo, a.autor, DATE_FORMAT(a.data, "%d/%m/%Y %H:%i") as data, a.URL_slug, c.categoria, a.foto, u.username as author_username, u.first_name as author_first, u.last_name as author_last, u.avatar as author_avatar FROM artigos a LEFT JOIN categorias c ON a.id_categoria = c.id_categoria LEFT JOIN users u ON a.autor = u.id_user '
     . ($role === 'author' ? 'WHERE a.autor = ? ' : '')
     . 'ORDER BY a.data DESC';
 if ($role === 'author') {

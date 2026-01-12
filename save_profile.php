@@ -23,7 +23,7 @@ if ($username === '') { header('Location: profile.php?error=' . urlencode('Nome 
 if ($password !== '' && $password !== $password_confirm) { header('Location: profile.php?error=' . urlencode('As palavras-passe não coincidem.')); exit; }
 
 // Verificar se username está em uso por outro user
-$stmt = $conn->prepare('SELECT id_user FROM Users WHERE username = ? AND id_user != ? LIMIT 1');
+$stmt = $conn->prepare('SELECT id_user FROM users WHERE username = ? AND id_user != ? LIMIT 1');
 $stmt->bind_param('si', $username, $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -61,7 +61,7 @@ if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FI
 }
 
 // Ensure avatar column exists; add if missing
-$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'avatar'");
+$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'avatar'");
 $colStmt->execute();
 $colRes = $colStmt->get_result();
 $hasAvatarCol = false;
@@ -69,12 +69,12 @@ if ($colRes && ($cr = $colRes->fetch_assoc())) { $hasAvatarCol = ((int)$cr['cnt'
 $colStmt->close();
 if (!$hasAvatarCol && $avatarFilename !== null) {
     // try to add column (best-effort)
-    $conn->query("ALTER TABLE Users ADD COLUMN avatar VARCHAR(255) DEFAULT NULL");
+    $conn->query("ALTER TABLE users ADD COLUMN avatar VARCHAR(255) DEFAULT NULL");
     $hasAvatarCol = true;
 }
 
 // Ensure biografia column exists; add if missing
-$colStmt2 = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'biografia'");
+$colStmt2 = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'biografia'");
 $colStmt2->execute();
 $colRes2 = $colStmt2->get_result();
 $hasBiografiaCol = false;
@@ -83,7 +83,7 @@ $colStmt2->close();
 if (!$hasBiografiaCol) {
     // try to add column (best-effort)
     try {
-        $conn->query("ALTER TABLE Users ADD COLUMN biografia TEXT DEFAULT NULL");
+        $conn->query("ALTER TABLE users ADD COLUMN biografia TEXT DEFAULT NULL");
         $hasBiografiaCol = true;
     } catch (Exception $e) {
         // Ignore if already exists or error
@@ -118,7 +118,7 @@ if ($hasBiografiaCol) {
 }
 
 $setClause = implode(' = ?, ', $updateFields) . ' = ?';
-$sql = "UPDATE Users SET $setClause WHERE id_user = ?";
+$sql = "UPDATE users SET $setClause WHERE id_user = ?";
 $updateValues[] = $uid;
 $types .= 'i';
 $stmt = $conn->prepare($sql);

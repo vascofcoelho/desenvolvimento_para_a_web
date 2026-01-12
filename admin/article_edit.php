@@ -10,7 +10,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -23,7 +23,7 @@ if ($role !== 'admin' && $role !== 'author') { echo 'Acesso negado.'; exit; }
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $article = ['titulo'=>'','texto_artigo'=>'','autor'=>'','foto'=>'','id_categoria'=>null,'URL_slug'=>''];
 if ($id > 0) {
-    $stmt = $conn->prepare('SELECT id_artigo, titulo, texto_artigo, autor, foto, id_categoria, URL_slug FROM Artigos WHERE id_artigo = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT id_artigo, titulo, texto_artigo, autor, foto, id_categoria, URL_slug FROM artigos WHERE id_artigo = ? LIMIT 1');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -31,7 +31,7 @@ if ($id > 0) {
     $stmt->close();
     // If the stored autor is a username (legacy), try to resolve to user id
     if (!empty($article['autor']) && !is_numeric($article['autor'])) {
-        $s = $conn->prepare('SELECT id_user FROM Users WHERE username = ? LIMIT 1');
+        $s = $conn->prepare('SELECT id_user FROM users WHERE username = ? LIMIT 1');
         $s->bind_param('s', $article['autor']);
         $s->execute();
         $rr = $s->get_result()->fetch_assoc();

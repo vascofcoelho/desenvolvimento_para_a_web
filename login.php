@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Try to select role (newer schema). If the column doesn't exist, fall back to a query without role.
         $user = null;
         try {
-            $sql = 'SELECT id_user, username, password, salt, role FROM Users WHERE username = ? LIMIT 1';
+            $sql = 'SELECT id_user, username, password, salt, role FROM users WHERE username = ? LIMIT 1';
             $stmt = $conn->prepare($sql);
         } catch (mysqli_sql_exception $e) {
             // Fallback: role column missing — try without it
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($stmt)) {
             // Attempt the simpler query (no role)
             try {
-                $sql2 = 'SELECT id_user, username, password, salt FROM Users WHERE username = ? LIMIT 1';
+                $sql2 = 'SELECT id_user, username, password, salt FROM users WHERE username = ? LIMIT 1';
                 $stmt = $conn->prepare($sql2);
             } catch (mysqli_sql_exception $e) {
                 $stmt = null;
@@ -55,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$user && $username === 'dev' && $password === 'dev') {
             $pwHash = password_hash($password, PASSWORD_DEFAULT);
             $email = 'dev@local';
-            $ins = $conn->prepare('INSERT INTO Users (username, email, password, salt, first_name, last_name) VALUES (?, ?, ?, "", ?, ?)');
+            $ins = $conn->prepare('INSERT INTO users (username, email, password, salt, first_name, last_name) VALUES (?, ?, ?, "", ?, ?)');
             if ($ins) {
                 $fn = 'Dev'; $ln = 'User';
                 $ins->bind_param('sssss', $username, $email, $pwHash, $fn, $ln);
                 $ins->execute();
                 $ins->close();
-                $user = $conn->query('SELECT id_user, username, password, salt FROM Users WHERE username = "dev" LIMIT 1')->fetch_assoc();
+                $user = $conn->query('SELECT id_user, username, password, salt FROM users WHERE username = "dev" LIMIT 1')->fetch_assoc();
             }
         }
 
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Load avatar for session (if Users.avatar exists)
             try {
                 $conn2 = get_db();
-                $s2 = $conn2->prepare('SELECT avatar FROM Users WHERE id_user = ? LIMIT 1');
+                $s2 = $conn2->prepare('SELECT avatar FROM users WHERE id_user = ? LIMIT 1');
                 if ($s2) {
                     $s2->bind_param('i', $_SESSION['user_id']);
                     $s2->execute();

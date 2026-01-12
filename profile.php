@@ -10,14 +10,14 @@ $conn = get_db();
 $uid = (int)$_SESSION['user_id'];
 
 $hasAvatar = false;
-$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'avatar'");
+$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'avatar'");
 $colStmt->execute();
 $colRes = $colStmt->get_result();
 if ($colRes && ($cr = $colRes->fetch_assoc())) { $hasAvatar = ((int)$cr['cnt'] > 0); }
 $colStmt->close();
 
 $hasBiografia = false;
-$colStmt2 = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'biografia'");
+$colStmt2 = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'biografia'");
 $colStmt2->execute();
 $colRes2 = $colStmt2->get_result();
 if ($colRes2 && ($cr2 = $colRes2->fetch_assoc())) { $hasBiografia = ((int)$cr2['cnt'] > 0); }
@@ -26,7 +26,7 @@ $colStmt2->close();
 // Se não existe, criar o campo biografia
 if (!$hasBiografia) {
     try {
-        $conn->query("ALTER TABLE Users ADD COLUMN biografia TEXT DEFAULT NULL");
+        $conn->query("ALTER TABLE users ADD COLUMN biografia TEXT DEFAULT NULL");
         $hasBiografia = true;
     } catch (Exception $e) {
         // Ignore if already exists or error
@@ -39,7 +39,7 @@ $selectFields = 'id_user, username, email, first_name, last_name';
 if ($hasAvatar) $selectFields .= ', avatar';
 if ($hasBiografia) $selectFields .= ', biografia, role';
 
-$stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();

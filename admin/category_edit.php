@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $r = $stmt->get_result()->fetch_assoc();
@@ -20,7 +20,7 @@ if ($role !== 'admin') { echo 'Acesso negado.'; exit; }
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $cat = ['categoria' => ''];
 if ($id > 0) {
-    $stmt = $conn->prepare('SELECT id_categoria, categoria FROM Categorias WHERE id_categoria = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT id_categoria, categoria FROM categorias WHERE id_categoria = ? LIMIT 1');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $res = $stmt->get_result();

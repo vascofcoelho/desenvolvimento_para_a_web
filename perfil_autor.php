@@ -19,7 +19,7 @@ $conn = get_db();
 
 // Verificar se campo biografia existe
 $hasBiografia = false;
-$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'biografia'");
+$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'biografia'");
 $colStmt->execute();
 $colRes = $colStmt->get_result();
 if ($colRes && ($cr = $colRes->fetch_assoc())) { $hasBiografia = ((int)$cr['cnt'] > 0); }
@@ -28,7 +28,7 @@ $colStmt->close();
 // Se não existe, criar o campo biografia
 if (!$hasBiografia) {
     try {
-        $conn->query("ALTER TABLE Users ADD COLUMN biografia TEXT DEFAULT NULL");
+        $conn->query("ALTER TABLE users ADD COLUMN biografia TEXT DEFAULT NULL");
         $hasBiografia = true;
     } catch (Exception $e) {
         // Ignore if already exists or error
@@ -41,10 +41,10 @@ $selectFields = 'id_user, username, first_name, last_name, avatar, role';
 if ($hasBiografia) $selectFields .= ', biografia';
 
 if ($author_id > 0) {
-    $stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM Users WHERE id_user = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM users WHERE id_user = ? LIMIT 1');
     $stmt->bind_param('i', $author_id);
 } else {
-    $stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM Users WHERE username = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT ' . $selectFields . ' FROM users WHERE username = ? LIMIT 1');
     $stmt->bind_param('s', $author_username);
 }
 $stmt->execute();
@@ -79,11 +79,11 @@ $biografia = $author['biografia'] ?? '';
 $articles = [];
 $sql = "SELECT a.id_artigo, a.titulo, a.URL_slug, a.foto, 
         DATE_FORMAT(a.data, '%d/%m/%Y') as data,
-        (SELECT COUNT(*) FROM Likes l WHERE l.id_artigo = a.id_artigo) AS likes_count,
-        (SELECT COUNT(*) FROM Comentarios c WHERE c.id_artigo = a.id_artigo) AS comments_count,
+        (SELECT COUNT(*) FROM likes l WHERE l.id_artigo = a.id_artigo) AS likes_count,
+        (SELECT COUNT(*) FROM comentarios c WHERE c.id_artigo = a.id_artigo) AS comments_count,
         c.categoria
-        FROM Artigos a
-        LEFT JOIN Categorias c ON a.id_categoria = c.id_categoria
+        FROM artigos a
+        LEFT JOIN categorias c ON a.id_categoria = c.id_categoria
         WHERE (a.autor = ? OR a.autor = ?)
         ORDER BY a.data DESC";
 $stmt = $conn->prepare($sql);

@@ -8,7 +8,7 @@ if (empty($_SESSION['user_id'])) { header('Location: ../login.php'); exit; }
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
 // check role of current user
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -28,7 +28,7 @@ $password = $_POST['password'] ?? '';
 // Prevent admins from changing their own role
 if ($id > 0 && $id === $uid) {
     // fetch current role and force it
-    $s = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+    $s = $conn->prepare('SELECT role FROM users WHERE id_user = ? LIMIT 1');
     $s->bind_param('i', $uid);
     $s->execute();
     $rr = $s->get_result()->fetch_assoc();
@@ -42,10 +42,10 @@ if ($id > 0) {
     // editar
     if ($password !== '') {
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare('UPDATE Users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ?, password = ? WHERE id_user = ?');
+        $stmt = $conn->prepare('UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ?, password = ? WHERE id_user = ?');
         $stmt->bind_param('ssssssi', $username, $email, $first, $last, $role_new, $hash, $id);
     } else {
-        $stmt = $conn->prepare('UPDATE Users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ? WHERE id_user = ?');
+        $stmt = $conn->prepare('UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ? WHERE id_user = ?');
         $stmt->bind_param('sssssi', $username, $email, $first, $last, $role_new, $id);
     }
     $stmt->execute();
@@ -55,7 +55,7 @@ if ($id > 0) {
     if ($password === '') { $password = bin2hex(random_bytes(6)); }
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $role_new = !empty($role_new) ? $role_new : 'user';
-    $stmt = $conn->prepare('INSERT INTO Users (username, email, first_name, last_name, password, role) VALUES (?, ?, ?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO users (username, email, first_name, last_name, password, role) VALUES (?, ?, ?, ?, ?, ?)');
     $stmt->bind_param('ssssss', $username, $email, $first, $last, $hash, $role_new);
     $stmt->execute();
     $stmt->close();

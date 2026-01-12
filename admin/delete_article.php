@@ -11,7 +11,7 @@ if (empty($_SESSION['user_id'])) {
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
 // check role
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $r = $stmt->get_result()->fetch_assoc();
@@ -24,7 +24,7 @@ $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) { header('Location: articles.php'); exit; }
 
 // Opcional: obter imagem e remover ficheiro
-$stmt = $conn->prepare('SELECT foto FROM Artigos WHERE id_artigo = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT foto FROM artigos WHERE id_artigo = ? LIMIT 1');
 $stmt->bind_param('i', $id);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -39,7 +39,7 @@ if ($row && !empty($row['foto'])) {
 $allow = false;
 if ($role === 'admin') $allow = true;
 elseif ($role === 'author') {
-    $stmt = $conn->prepare('SELECT autor FROM Artigos WHERE id_artigo = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT autor FROM artigos WHERE id_artigo = ? LIMIT 1');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -57,7 +57,7 @@ elseif ($role === 'author') {
 
 if (!$allow) { echo 'Acesso negado.'; exit; }
 
-$del = $conn->prepare('DELETE FROM Artigos WHERE id_artigo = ?');
+$del = $conn->prepare('DELETE FROM artigos WHERE id_artigo = ?');
 $del->bind_param('i', $id);
 $del->execute();
 $del->close();

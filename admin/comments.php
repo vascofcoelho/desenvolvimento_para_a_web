@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -21,7 +21,7 @@ $stmt->close();
 if ($role !== 'admin' && $role !== 'moderator' && $role !== 'author') { echo 'Acesso negado.'; exit; }
 
 $comments = [];
-$sql = 'SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as data, u.username, a.titulo, a.URL_slug, a.autor as artigo_autor FROM Comentarios c LEFT JOIN Users u ON c.id_user = u.id_user LEFT JOIN Artigos a ON c.id_artigo = a.id_artigo ';
+$sql = 'SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as data, u.username, a.titulo, a.URL_slug, a.autor as artigo_autor FROM comentarios c LEFT JOIN users u ON c.id_user = u.id_user LEFT JOIN artigos a ON c.id_artigo = a.id_artigo ';
 if ($role === 'author') {
     // authors see comments only for their own articles
     $sql .= 'WHERE (a.autor = ? OR a.autor = ?) ';

@@ -40,7 +40,7 @@ if (mb_strlen($comentario) > 2000) {
 $conn = get_db();
 
 // Inserir comentário
-$sql = "INSERT INTO Comentarios (id_user, comentario, id_artigo) VALUES (?, ?, ?)";
+$sql = "INSERT INTO comentarios (id_user, comentario, id_artigo) VALUES (?, ?, ?)";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     http_response_code(500);
@@ -59,7 +59,7 @@ if (!$ok) {
 
 // Obter slug para redirecionar de volta ao artigo
 $slug = '';
-$sql = 'SELECT URL_slug FROM Artigos WHERE id_artigo = ? LIMIT 1';
+$sql = 'SELECT URL_slug FROM artigos WHERE id_artigo = ? LIMIT 1';
 $stmt = $conn->prepare($sql);
 if ($stmt) {
     $stmt->bind_param('i', $id_artigo);

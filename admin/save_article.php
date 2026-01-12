@@ -10,7 +10,7 @@ if (empty($_SESSION['user_id'])) {
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
 // check role
-$stmt = $conn->prepare('SELECT role, username FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role, username FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -57,7 +57,7 @@ $slug = slugify($titulo);
 // Garantir slug único
 $base = $slug; $i = 1;
 while (true) {
-    $q = $conn->prepare('SELECT id_artigo FROM Artigos WHERE URL_slug = ?' . ($id>0 ? ' AND id_artigo != ?' : '') . ' LIMIT 1');
+    $q = $conn->prepare('SELECT id_artigo FROM artigos WHERE URL_slug = ?' . ($id>0 ? ' AND id_artigo != ?' : '') . ' LIMIT 1');
     if ($id>0) $q->bind_param('si', $slug, $id); else $q->bind_param('s', $slug);
     $q->execute();
     $r = $q->get_result()->fetch_assoc();
@@ -90,18 +90,18 @@ if ($id === 0 && $foto_val === null) {
 
 if ($id > 0) {
     if ($foto_val !== null) {
-        $sql = 'UPDATE Artigos SET titulo = ?, texto_artigo = ?, autor = ?, id_categoria = ?, foto = ?, URL_slug = ? WHERE id_artigo = ?';
+        $sql = 'UPDATE artigos SET titulo = ?, texto_artigo = ?, autor = ?, id_categoria = ?, foto = ?, URL_slug = ? WHERE id_artigo = ?';
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssiissi', $titulo, $texto, $autor, $id_categoria, $foto_val, $slug, $id);
     } else {
-        $sql = 'UPDATE Artigos SET titulo = ?, texto_artigo = ?, autor = ?, id_categoria = ?, URL_slug = ? WHERE id_artigo = ?';
+        $sql = 'UPDATE artigos SET titulo = ?, texto_artigo = ?, autor = ?, id_categoria = ?, URL_slug = ? WHERE id_artigo = ?';
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssiisi', $titulo, $texto, $autor, $id_categoria, $slug, $id);
     }
     $ok = $stmt->execute();
     $stmt->close();
 } else {
-    $sql = 'INSERT INTO Artigos (titulo, texto_artigo, autor, id_categoria, foto, URL_slug) VALUES (?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO artigos (titulo, texto_artigo, autor, id_categoria, foto, URL_slug) VALUES (?, ?, ?, ?, ?, ?)';
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('ssiiss', $titulo, $texto, $autor, $id_categoria, $foto_val, $slug);
     $ok = $stmt->execute();

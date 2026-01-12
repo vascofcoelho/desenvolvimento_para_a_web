@@ -44,7 +44,7 @@ function href($path) {
                         $uid = (int)($_SESSION['user_id'] ?? 0);
                         if ($uid > 0) {
                             $navConn = get_db();
-                            $s = $navConn->prepare('SELECT avatar FROM Users WHERE id_user = ? LIMIT 1');
+                            $s = $navConn->prepare('SELECT avatar FROM users WHERE id_user = ? LIMIT 1');
                             if ($s) {
                                 $s->bind_param('i', $uid);
                                 $s->execute();

@@ -37,7 +37,7 @@
 
     // Total de artigos para calcular páginas
     $total = 0;
-    $countRes = $conn->query('SELECT COUNT(*) as cnt FROM Artigos');
+    $countRes = $conn->query('SELECT COUNT(*) as cnt FROM artigos');
     if ($countRes) {
         $r = $countRes->fetch_assoc();
         $total = (int) ($r['cnt'] ?? 0);
@@ -50,7 +50,7 @@
     $offset = ($page - 1) * $per_page;
 
     $articles = [];
-    $sql = "SELECT id_artigo, titulo, texto_artigo, autor, DATE_FORMAT(data, '%d/%m/%Y') as data, foto, URL_slug FROM Artigos ORDER BY data DESC LIMIT ? OFFSET ?";
+    $sql = "SELECT id_artigo, titulo, texto_artigo, autor, DATE_FORMAT(data, '%d/%m/%Y') as data, foto, URL_slug FROM artigos ORDER BY data DESC LIMIT ? OFFSET ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('ii', $per_page, $offset);
     $stmt->execute();
@@ -67,7 +67,7 @@
         $a['author_username'] = null;
         if (!empty($a['autor'])) {
             if (is_numeric($a['autor'])) {
-                $s = $conn->prepare('SELECT id_user, username, first_name, last_name FROM Users WHERE id_user = ? LIMIT 1');
+                $s = $conn->prepare('SELECT id_user, username, first_name, last_name FROM users WHERE id_user = ? LIMIT 1');
                 $aid = (int)$a['autor'];
                 $s->bind_param('i', $aid);
                 $s->execute();
@@ -79,7 +79,7 @@
                 }
                 $s->close();
             } else {
-                $s = $conn->prepare('SELECT id_user, username, first_name, last_name FROM Users WHERE username = ? LIMIT 1');
+                $s = $conn->prepare('SELECT id_user, username, first_name, last_name FROM users WHERE username = ? LIMIT 1');
                 $s->bind_param('s', $a['autor']);
                 $s->execute();
                 $ur = $s->get_result()->fetch_assoc();
@@ -130,7 +130,7 @@
             <!-- Início do artigo em destaque -->
             <div class="mb-5">
                 
-                <div class="card featured-article d-none d-md-block">
+                <div class="card featured-article">
                     <div class="row g-0">
                         <div class="col-md-6">
                             <?php if ($feat_img): ?>

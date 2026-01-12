@@ -9,7 +9,7 @@ if (empty($_SESSION['user_id'])) {
 
 $conn = get_db();
 $uid = (int)($_SESSION['user_id'] ?? 0);
-$stmt = $conn->prepare('SELECT role FROM Users WHERE id_user = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT role FROM users WHERE id_user = ? LIMIT 1');
 $stmt->bind_param('i', $uid);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -21,8 +21,8 @@ if ($role !== 'admin') { echo 'Acesso negado.'; exit; }
 
 $cats = [];
 $sql = 'SELECT c.id_categoria, c.categoria, COUNT(a.id_artigo) as posts_count 
-        FROM Categorias c 
-        LEFT JOIN Artigos a ON c.id_categoria = a.id_categoria 
+        FROM categorias c 
+        LEFT JOIN artigos a ON c.id_categoria = a.id_categoria 
         GROUP BY c.id_categoria, c.categoria 
         ORDER BY c.categoria ASC';
 if ($res = $conn->query($sql)) { while ($c = $res->fetch_assoc()) $cats[] = $c; $res->free(); }

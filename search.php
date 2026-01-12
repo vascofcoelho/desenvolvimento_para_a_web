@@ -12,19 +12,19 @@ $conn = get_db();
 
 // Load categories for filter
 $categories = [];
-$cres = $conn->query('SELECT id_categoria, categoria FROM Categorias ORDER BY categoria');
+$cres = $conn->query('SELECT id_categoria, categoria FROM categorias ORDER BY categoria');
 if ($cres) { while ($c = $cres->fetch_assoc()) $categories[] = $c; $cres->free(); }
 
 // Load authors (users with articles)
 $authors = [];
-$ares = $conn->query('SELECT DISTINCT u.id_user, u.username, u.first_name, u.last_name FROM Users u JOIN Artigos a ON a.autor = u.id_user ORDER BY u.username');
+$ares = $conn->query('SELECT DISTINCT u.id_user, u.username, u.first_name, u.last_name FROM users u JOIN artigos a ON a.autor = u.id_user ORDER BY u.username');
 if ($ares) { while ($u = $ares->fetch_assoc()) $authors[] = $u; $ares->free(); }
 
 // Build query with optional search
 $params = [];
 $types = '';
 $where = [];
-$sql = 'SELECT a.id_artigo, a.titulo, a.URL_slug, a.foto, DATE_FORMAT(a.data, "%d/%m/%Y %H:%i") as data, c.categoria, u.username as author_username, u.first_name as author_first, u.last_name as author_last, u.avatar as author_avatar FROM Artigos a LEFT JOIN Categorias c ON a.id_categoria = c.id_categoria LEFT JOIN Users u ON a.autor = u.id_user';
+$sql = 'SELECT a.id_artigo, a.titulo, a.URL_slug, a.foto, DATE_FORMAT(a.data, "%d/%m/%Y %H:%i") as data, c.categoria, u.username as author_username, u.first_name as author_first, u.last_name as author_last, u.avatar as author_avatar FROM artigos a LEFT JOIN categorias c ON a.id_categoria = c.id_categoria LEFT JOIN users u ON a.autor = u.id_user';
 
 if ($q !== '') {
     $where[] = '(a.titulo LIKE ? OR a.texto_artigo LIKE ?)';

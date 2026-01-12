@@ -24,7 +24,7 @@ if ($password !== $password_confirm) {
 
 $conn = get_db();
 // Verificar existência de username
-$stmt = $conn->prepare('SELECT id_user FROM Users WHERE username = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT id_user FROM users WHERE username = ? LIMIT 1');
 $stmt->bind_param('s', $username);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -39,7 +39,7 @@ $hash = password_hash($password, PASSWORD_DEFAULT);
 $salt = '';
 $role = 'user';
 // Ensure role column exists
-$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Users' AND COLUMN_NAME = 'role'");
+$colStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'role'");
 $colStmt->execute();
 $colRes = $colStmt->get_result();
 $hasRole = false;
@@ -47,16 +47,16 @@ if ($colRes && ($cr = $colRes->fetch_assoc())) { $hasRole = ((int)$cr['cnt'] > 0
 $colStmt->close();
 if (!$hasRole) {
     // best-effort add column
-    $conn->query("ALTER TABLE Users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user'");
+    $conn->query("ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user'");
     $hasRole = true;
 }
 
 if ($hasRole) {
-    $stmt = $conn->prepare('INSERT INTO Users (username, email, password, salt, first_name, last_name, role) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO users (username, email, password, salt, first_name, last_name, role) VALUES (?, ?, ?, ?, ?, ?, ?)');
     $stmt->bind_param('sssssss', $username, $email, $hash, $salt, $first, $last, $role);
 } else {
     // fallback if cannot add role column
-    $stmt = $conn->prepare('INSERT INTO Users (username, email, password, salt, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO users (username, email, password, salt, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?)');
     $stmt->bind_param('ssssss', $username, $email, $hash, $salt, $first, $last);
 }
 $ok = $stmt->execute();
