@@ -8,12 +8,21 @@
     </footer>
 
     <?php
-    // Calcular base do site para criar paths root-relative (ex: /desenvolvimento_para_a_web)
-    $scriptPath = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-    $parts = explode('/', trim($scriptPath, '/'));
+    // Calcular base do site para criar paths root-relative
+    // Compute base from filesystem: project root relative to document root when possible
+    $docRoot = isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : false;
+    $projectRoot = realpath(__DIR__ . '/..');
     $base = '';
-    if (count($parts) > 0 && $parts[0] !== '') {
-        $base = '/' . $parts[0];
+    if ($docRoot && $projectRoot && strpos(str_replace('\\','/',$projectRoot), str_replace('\\','/',$docRoot)) === 0) {
+        $rel = trim(str_replace('\\','/',substr($projectRoot, strlen($docRoot))), '/');
+        if ($rel !== '') $base = '/' . $rel;
+    } else {
+        // Fallback: use first URL path segment if it looks like a folder (no dot)
+        $scriptPath = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+        $parts = explode('/', trim($scriptPath, '/'));
+        if (count($parts) > 0 && $parts[0] !== '' && strpos($parts[0], '.') === false) {
+            $base = '/' . $parts[0];
+        }
     }
     function asset($path) {
         global $base;

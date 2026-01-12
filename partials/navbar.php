@@ -4,18 +4,25 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../db.php';
 
 // Calcular base do site (pasta do projecto na URL) para criar links root-relative
-// Fix for PHP built-in server
-$script = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-$scriptDir = dirname($script);
-$base = ($scriptDir === '/' || $scriptDir === '.') ? '' : $scriptDir;
+// Compute base from filesystem: project root relative to document root when possible
+$docRoot = isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : false;
+$projectRoot = realpath(__DIR__ . '/..');
+$base = '';
+if ($docRoot && $projectRoot && strpos(str_replace('\\','/',$projectRoot), str_replace('\\','/',$docRoot)) === 0) {
+    $rel = trim(str_replace('\\','/',substr($projectRoot, strlen($docRoot))), '/');
+    if ($rel !== '') $base = '/' . $rel;
+} else {
+    // Fallback: use first URL path segment if it looks like a folder (no dot)
+    $script = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+    $parts = explode('/', trim($script, '/'));
+    if (count($parts) > 0 && $parts[0] !== '' && strpos($parts[0], '.') === false) {
+        $base = '/' . $parts[0];
+    }
+}
 
 function href($path) {
     global $base;
-    $path = ltrim($path, '/');
-    if (empty($base)) {
-        return '/' . $path;
-    }
-    return rtrim($base, '/') . '/' . $path;
+    return $base . '/' . ltrim($path, '/');
 }
 ?>
 <nav class="navbar navbar-expand-lg bg-body-tertiary bg-light">
@@ -40,7 +47,7 @@ function href($path) {
                         if (preg_match('#^https?://#i', $sessAv) || strpos($sessAv, '/') === 0) {
                             $user_avatar = $sessAv;
                         } else {
-                            $user_avatar = $base . '/' . ltrim($sessAv, '/');
+                            $user_avatar = href($sessAv);
                         }
                     } else {
                         // Fallback: query DB once and store in session for subsequent requests
@@ -58,8 +65,8 @@ function href($path) {
                                     if (preg_match('#^https?://#i', $rawAv)) {
                                         $user_avatar = $rawAv;
                                         $_SESSION['avatar'] = $rawAv;
-                                    } else {
-                                        $user_avatar = $base . '/' . ltrim($rawAv, '/');
+                                        } else {
+                                        $user_avatar = href($rawAv);
                                         $_SESSION['avatar'] = $rawAv; // store raw path in session
                                     }
                                 }
