@@ -46,7 +46,7 @@ if ($id > 0) {
 
 // Carregar categorias
 $categories = [];
-$cres = $conn->query('SELECT id_categoria, categoria FROM Categorias ORDER BY categoria');
+$cres = $conn->query('SELECT id_categoria, categoria FROM categorias ORDER BY categoria');
 if ($cres) { while ($c = $cres->fetch_assoc()) $categories[] = $c; $cres->free(); }
 
 function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -64,7 +64,12 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <body>
 <?php require_once __DIR__ . '/../partials/navbar.php'; ?>
 <main class="container my-5">
-    <h3><?php echo $id ? 'Editar' : 'Criar'; ?> Artigo</h3>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><?php echo $id ? 'Editar' : 'Criar'; ?> Artigo</h3>
+        <div>
+            <a class="btn btn-success" href="articles.php">Voltar</a>
+        </div>
+    </div>
     <form method="post" action="save_article.php" enctype="multipart/form-data">
         <input type="hidden" name="id_artigo" value="<?php echo e($id); ?>">
         <div class="mb-3">
@@ -77,7 +82,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
             <?php
             // Load users for selection (only authors)
             $users = [];
-            $ustmt = $conn->prepare('SELECT id_user, username, first_name, last_name FROM Users WHERE role = ? ORDER BY username');
+            $ustmt = $conn->prepare('SELECT id_user, username, first_name, last_name FROM users WHERE role = ? ORDER BY username');
             $author_role = 'author';
             $ustmt->bind_param('s', $author_role);
             $ustmt->execute();
@@ -122,7 +127,6 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
             <textarea name="texto_artigo" rows="10" class="form-control"><?php echo e($article['texto_artigo']); ?></textarea>
         </div>
         <button class="btn btn-success">Guardar</button>
-        <a class="btn btn-outline-success" href="articles.php">Voltar</a>
     </form>
 </main>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>

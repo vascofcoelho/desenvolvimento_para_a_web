@@ -42,7 +42,10 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestão de Utilizadores</h2>
-            <a class="btn btn-success" href="register_user.php">Criar Novo Utilizador</a>
+            <div>
+                <a class="btn btn-success me-2" href="index.php">Voltar</a>
+                <a class="btn btn-success" href="register_user.php">Criar Novo Utilizador</a>
+            </div>
     </div>
 
     <?php if (count($users) === 0): ?>

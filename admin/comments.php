@@ -59,11 +59,9 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestão de Comentários</h2>
-        <?php if (!empty($role) && $role === 'moderator'): ?>
-              <a class="btn btn-outline-success" href="../index.php">Voltar aos Artigos</a>
-        <?php else: ?>
-              <a class="btn btn-outline-success" href="articles.php">Voltar aos Artigos</a>
-        <?php endif; ?>
+        <div>
+            <a class="btn btn-success" href="index.php">Voltar</a>
+        </div>
     </div>
 
     <?php if (count($comments) === 0): ?>

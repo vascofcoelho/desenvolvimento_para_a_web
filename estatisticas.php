@@ -80,7 +80,7 @@ function e($s) { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Estatísticas</h2>
-        <a class="btn btn-success" href="index.php">Voltar</a>
+        <a class="btn btn-success" href="admin/index.php">Voltar</a>
     </div>
 
     <div class="row g-3 mb-4">

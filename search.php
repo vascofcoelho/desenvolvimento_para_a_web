@@ -97,7 +97,7 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         </div>
         <div class="col-12 d-flex">
             <button class="btn btn-success me-2">Pesquisar</button>
-            <a class="btn btn-outline-success" href="search.php">Limpar</a>
+            <a class="btn btn-success" href="search.php">Limpar</a>
         </div>
     </form>
 

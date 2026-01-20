@@ -23,17 +23,14 @@ $username = $r['username'] ?? '';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) { header('Location: articles.php'); exit; }
 
-// Opcional: obter imagem e remover ficheiro
+// Opcional: obter imagem (adiar remoção até confirmação da BD)
 $stmt = $conn->prepare('SELECT foto FROM artigos WHERE id_artigo = ? LIMIT 1');
 $stmt->bind_param('i', $id);
 $stmt->execute();
 $res = $stmt->get_result();
-$row = $res->fetch_assoc();
+$fotoRow = $res->fetch_assoc();
 $stmt->close();
-if ($row && !empty($row['foto'])) {
-    $path = __DIR__ . '/../' . $row['foto'];
-    if (file_exists($path)) @unlink($path);
-}
+$foto_path = ($fotoRow && !empty($fotoRow['foto'])) ? $fotoRow['foto'] : '';
 
 // If author, ensure they own the article
 $allow = false;
@@ -57,10 +54,48 @@ elseif ($role === 'author') {
 
 if (!$allow) { echo 'Acesso negado.'; exit; }
 
-$del = $conn->prepare('DELETE FROM artigos WHERE id_artigo = ?');
-$del->bind_param('i', $id);
-$del->execute();
-$del->close();
+// Delete dependent rows in a transaction: comentarios, likes, then artigo
+$conn->begin_transaction();
+$ok = true;
+// delete comentarios
+$d1 = $conn->prepare('DELETE FROM comentarios WHERE id_artigo = ?');
+if ($d1) {
+    $d1->bind_param('i', $id);
+    if (!$d1->execute()) $ok = false;
+    $d1->close();
+} else {
+    $ok = false;
+}
+// delete likes
+$d2 = $conn->prepare('DELETE FROM likes WHERE id_artigo = ?');
+if ($d2) {
+    $d2->bind_param('i', $id);
+    if (!$d2->execute()) $ok = false;
+    $d2->close();
+} else {
+    $ok = false;
+}
+// delete artigo
+$d3 = $conn->prepare('DELETE FROM artigos WHERE id_artigo = ?');
+if ($d3) {
+    $d3->bind_param('i', $id);
+    if (!$d3->execute()) $ok = false;
+    $d3->close();
+} else {
+    $ok = false;
+}
 
-header('Location: articles.php');
-exit;
+if ($ok) {
+    $conn->commit();
+    // remove image file if present
+    if (!empty($foto_path)) {
+        $path = __DIR__ . '/../' . $foto_path;
+        if (file_exists($path)) @unlink($path);
+    }
+    header('Location: articles.php');
+    exit;
+} else {
+    $conn->rollback();
+    echo 'Erro ao eliminar artigo. Tente novamente.';
+    exit;
+}

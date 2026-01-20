@@ -43,7 +43,12 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <body>
 <?php require_once __DIR__ . '/../partials/navbar.php'; ?>
 <main class="container my-5">
-    <h3><?php echo $id ? 'Editar' : 'Criar'; ?> Categoria</h3>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><?php echo $id ? 'Editar' : 'Criar'; ?> Categoria</h3>
+        <div>
+            <a class="btn btn-success" href="categories.php">Voltar</a>
+        </div>
+    </div>
     <form method="post" action="save_category.php">
         <input type="hidden" name="id_categoria" value="<?php echo e($id); ?>">
         <div class="mb-3">
@@ -51,7 +56,6 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
             <input name="categoria" class="form-control" required value="<?php echo e($cat['categoria']); ?>">
         </div>
         <button class="btn btn-success">Guardar</button>
-        <a class="btn btn-outline-success" href="categories.php">Voltar</a>
     </form>
 </main>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>

@@ -201,7 +201,7 @@ function e($s) { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8
                             $author_link_id = '?id=' . (int)$article['autor'];
                         } else {
                             // Se for username, buscar ID
-                            $s = $conn->prepare('SELECT id_user FROM Users WHERE username = ? LIMIT 1');
+                            $s = $conn->prepare('SELECT id_user FROM users WHERE username = ? LIMIT 1');
                             $s->bind_param('s', $article['autor']);
                             $s->execute();
                             $ur = $s->get_result()->fetch_assoc();

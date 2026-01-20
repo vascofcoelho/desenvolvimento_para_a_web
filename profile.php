@@ -124,7 +124,7 @@ if (!empty($_GET['error'])) $msg = $_GET['error'];
                 </div>
                 <div>
                     <button class="btn btn-success">Salvar</button>
-                    <a class="btn btn-outline-success" href="index.php">Cancelar</a>
+                    <a class="btn btn-success" href="index.php">Cancelar</a>
                 </div>
             </form>
         </div>

@@ -46,7 +46,12 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
 <body>
 <?php require_once __DIR__ . '/../partials/navbar.php'; ?>
 <main class="container my-5">
-    <h2><?php echo $editing ? 'Editar' : 'Criar'; ?> Utilizador</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><?php echo $editing ? 'Editar' : 'Criar'; ?> Utilizador</h2>
+        <div>
+            <a class="btn btn-success" href="users.php">Voltar</a>
+        </div>
+    </div>
     <form method="post" action="save_user.php">
         <input type="hidden" name="id_user" value="<?php echo e($user['id_user']); ?>">
         <div class="mb-3">
@@ -85,7 +90,6 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         </div>
         <div>
             <button class="btn btn-success" type="submit">Salvar</button>
-            <a class="btn btn-outline-success" href="users.php">Cancelar</a>
         </div>
     </form>
 </main>
