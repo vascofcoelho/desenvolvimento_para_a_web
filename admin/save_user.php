@@ -42,7 +42,8 @@ if ($id > 0) {
     // editar
     if ($password !== '') {
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare('UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ?, password = ? WHERE id_user = ?');
+        // Clear legacy salt when setting a new password to avoid legacy-auth conflicts
+        $stmt = $conn->prepare('UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ?, password = ?, salt = "" WHERE id_user = ?');
         $stmt->bind_param('ssssssi', $username, $email, $first, $last, $role_new, $hash, $id);
     } else {
         $stmt = $conn->prepare('UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ?, role = ? WHERE id_user = ?');

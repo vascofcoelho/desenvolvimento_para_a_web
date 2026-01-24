@@ -71,15 +71,21 @@ $foto_val = null;
 if (!empty($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     $fn = $_FILES['foto']['name'];
     $ext = pathinfo($fn, PATHINFO_EXTENSION);
-    $allowed = ['jpg','jpeg','png','gif'];
+    $allowed = ['jpg','jpeg','png','gif','webp'];
     if (!in_array(mb_strtolower($ext), $allowed)) {
         echo 'Formato de imagem não suportado.'; exit;
     }
     $newname = time() . '_' . preg_replace('/[^a-z0-9._-]/i','_', $fn);
-    $target = __DIR__ . '/../imgs/' . $newname;
-    if (!move_uploaded_file($_FILES['foto']['tmp_name'], $target)) {
-        echo 'Erro ao mover ficheiro.'; exit;
+    $imgsDir = __DIR__ . '/../imgs';
+    if (!is_dir($imgsDir)) {
+        if (!mkdir($imgsDir, 0755, true)) { echo 'Não foi possível criar directoria de imagens.'; exit; }
     }
+    $target = $imgsDir . '/' . $newname;
+    if (!move_uploaded_file($_FILES['foto']['tmp_name'], $target)) {
+        echo 'Erro ao mover ficheiro. Código de erro: ' . ($_FILES['foto']['error'] ?? 'unknown'); exit;
+    }
+    // ensure file is readable
+    @chmod($target, 0644);
     $foto_val = 'imgs/' . $newname;
 }
 

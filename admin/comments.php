@@ -20,25 +20,33 @@ $stmt->close();
 // allow admins, moderators, and authors (authors only for their own articles)
 if ($role !== 'admin' && $role !== 'moderator' && $role !== 'author') { echo 'Acesso negado.'; exit; }
 
+// If an article is selected, show comments for that article. Otherwise show list of articles.
 $comments = [];
-$sql = 'SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as data, u.username, a.titulo, a.URL_slug, a.autor as artigo_autor FROM comentarios c LEFT JOIN users u ON c.id_user = u.id_user LEFT JOIN artigos a ON c.id_artigo = a.id_artigo ';
-if ($role === 'author') {
-    // authors see comments only for their own articles
-    $sql .= 'WHERE (a.autor = ? OR a.autor = ?) ';
-}
-$sql .= 'ORDER BY c.data DESC';
-if ($role === 'author') {
+$article_id = isset($_GET['article_id']) ? (int)$_GET['article_id'] : 0;
+
+if ($article_id > 0) {
+    $sql = 'SELECT c.id_comentario, c.comentario, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as data, u.username, a.titulo, a.URL_slug FROM comentarios c LEFT JOIN users u ON c.id_user = u.id_user LEFT JOIN artigos a ON c.id_artigo = a.id_artigo WHERE c.id_artigo = ? ORDER BY c.data DESC';
     $q = $conn->prepare($sql);
-    $q->bind_param('is', $uid, $username);
+    $q->bind_param('i', $article_id);
     $q->execute();
     $res = $q->get_result();
     while ($row = $res->fetch_assoc()) $comments[] = $row;
     $res->free();
     $q->close();
 } else {
-    if ($res = $conn->query($sql)) {
-        while ($row = $res->fetch_assoc()) $comments[] = $row;
-        $res->free();
+    // list articles for selection
+    $articles = [];
+    if ($role === 'author') {
+        $ast = $conn->prepare('SELECT id_artigo, titulo FROM artigos WHERE autor = ? ORDER BY data DESC');
+        $ast->bind_param('i', $uid);
+        $ast->execute();
+        $ares = $ast->get_result();
+        while ($r = $ares->fetch_assoc()) $articles[] = $r;
+        $ares->free();
+        $ast->close();
+    } else {
+        $ares = $conn->query('SELECT id_artigo, titulo FROM artigos ORDER BY data DESC');
+        if ($ares) { while ($r = $ares->fetch_assoc()) $articles[] = $r; $ares->free(); }
     }
 }
 
@@ -60,41 +68,68 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestão de Comentários</h2>
         <div>
-            <a class="btn btn-success" href="index.php">Voltar</a>
+            <?php if ($article_id > 0): ?>
+                <?php if ($role === 'author'): ?>
+                    <a class="btn btn-success" href="articles.php">Voltar</a>
+                <?php else: ?>
+                    <a class="btn btn-success" href="#" onclick="history.back(); return false;">Voltar</a>
+                <?php endif; ?>
+            <?php else: ?>
+                <?php if ($role === 'admin'): ?>
+                    <a class="btn btn-success" href="index.php">Voltar</a>
+                <?php elseif ($role === 'author'): ?>
+                    <a class="btn btn-success" href="articles.php">Voltar</a>
+                <?php else: ?>
+                    <a class="btn btn-success" href="../index.php">Voltar</a>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </div>
 
-    <?php if (count($comments) === 0): ?>
-        <p>Nenhum comentário encontrado.</p>
-    <?php else: ?>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Utilizador</th>
-                        <th>Comentário</th>
-                        <th>Artigo</th>
-                        <th>Data</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($comments as $c): ?>
-                    <tr>
-                        <td><?php echo e($c['id_comentario']); ?></td>
-                        <td><?php echo e($c['username'] ?: 'Utilizador'); ?></td>
-                        <td style="max-width:400px;"><?php echo nl2br(e($c['comentario'])); ?></td>
-                        <td><?php if (!empty($c['URL_slug'])): ?><a href="../artigo.php?slug=<?php echo urlencode($c['URL_slug']); ?>" target="_blank"><?php echo e($c['titulo']); ?></a><?php else: ?>-<?php endif; ?></td>
-                        <td><?php echo e($c['data']); ?></td>
-                        <td class="text-end">
-                            <a class="btn btn-sm btn-danger" href="delete_comment.php?id=<?php echo e($c['id_comentario']); ?>" onclick="return confirm('Apagar comentário?');">Apagar</a>
-                        </td>
-                    </tr>
+    <?php if ($article_id === 0): ?>
+        <?php if (empty($articles)): ?>
+            <p>Nenhum artigo encontrado.</p>
+        <?php else: ?>
+            <div class="list-group">
+                <?php foreach ($articles as $a): ?>
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="comments.php?article_id=<?php echo e($a['id_artigo']); ?>">
+                        <?php echo e($a['titulo']); ?>
+                        <span class="btn btn-success">Ver comentários</span>
+                    </a>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+            </div>
+        <?php endif; ?>
+    <?php else: ?>
+        <?php if (count($comments) === 0): ?>
+            <p>Nenhum comentário encontrado para este artigo.</p>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Utilizador</th>
+                            <th>Comentário</th>
+                            <th>Data</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($comments as $c): ?>
+                        <tr>
+                            <td><?php echo e($c['id_comentario']); ?></td>
+                            <td><?php echo e($c['username'] ?: 'Utilizador'); ?></td>
+                            <td style="max-width:400px;"><?php echo nl2br(e($c['comentario'])); ?></td>
+                            <td><?php echo e($c['data']); ?></td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-danger" href="delete_comment.php?id=<?php echo e($c['id_comentario']); ?>" onclick="return confirm('Apagar comentário?');">Apagar</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 </main>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>

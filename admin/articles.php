@@ -58,8 +58,14 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         <div>
             <a class="btn btn-success" href="article_edit.php">Criar Novo Artigo</a>
             <a class="btn btn-success ms-2" href="../estatisticas.php">Estatísticas</a>
-            <a class="btn btn-success ms-2" href="comments.php">Gestão de Comentários</a>
-            <a class="btn btn-success me-2" href="index.php">Voltar</a>
+            <?php if ($role !== 'admin'): ?>
+                <a class="btn btn-success ms-2" href="comments.php">Gestão de Comentários</a>
+            <?php endif; ?>
+            <?php if ($role === 'admin'): ?>
+                <a class="btn btn-success me-2" href="index.php">Voltar</a>
+            <?php else: ?>
+                <a class="btn btn-success me-2" href="../index.php">Voltar</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -91,20 +97,23 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
                                     if (!empty($a['author_first']) || !empty($a['author_last'])) {
                                         $author_label = htmlspecialchars(trim(($a['author_first'] ?? '') . ' ' . ($a['author_last'] ?? '')) . ' (' . ($a['author_username'] ?? '') . ')');
                                     }
-                                    // Build avatar src as root-relative so it works from /admin/ pages
+                                    // Build avatar src reliably for admin pages
                                     $author_avatar_src = '';
                                     if (!empty($a['author_avatar'])) {
                                         $av = trim($a['author_avatar']);
                                         if (preg_match('#^https?://#i', $av)) {
                                             $author_avatar_src = $av;
                                         } else {
-                                            // Normalize to a root-relative path: compute project base from SCRIPT_NAME
-                                            $scriptPath = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-                                            $parts = explode('/', trim($scriptPath, '/'));
-                                            $base = '';
-                                            if (count($parts) > 0 && $parts[0] !== '') $base = '/' . $parts[0];
-                                            // If stored path starts with '/', leave it trimmed; otherwise ensure it does not duplicate slashes
-                                            $author_avatar_src = $base . '/' . ltrim($av, '/');
+                                            // If stored path is already root-relative (starts with '/'), prefix '..' to reach site root from /admin
+                                            if (strpos($av, '/') === 0) {
+                                                $author_avatar_src = '..' . $av;
+                                            } elseif (strpos($av, 'imgs/') === 0) {
+                                                // common stored format 'imgs/avatars/...'
+                                                $author_avatar_src = '../' . $av;
+                                            } else {
+                                                // fallback: assume relative to project root
+                                                $author_avatar_src = '../' . ltrim($av, '/');
+                                            }
                                         }
                                     }
                                     if (!empty($author_avatar_src)) {

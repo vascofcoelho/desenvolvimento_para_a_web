@@ -80,21 +80,23 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         <div class="mb-3">
             <label class="form-label">Autor</label>
             <?php
-            // Load users for selection (only authors)
-            $users = [];
-            $ustmt = $conn->prepare('SELECT id_user, username, first_name, last_name FROM users WHERE role = ? ORDER BY username');
-            $author_role = 'author';
-            $ustmt->bind_param('s', $author_role);
-            $ustmt->execute();
-            $ures = $ustmt->get_result();
-            if ($ures) { while ($u = $ures->fetch_assoc()) $users[] = $u; $ures->free(); }
-            $ustmt->close();
+            // For authors and admins, author is the current user (no selection shown)
             $selected_author = (int)($article['autor'] ?? 0);
-            if ($role === 'author') {
-                // authors must be themselves
-                echo '<input type="hidden" name="autor" value="' . $uid . '">';
+            if ($role === 'author' || $role === 'admin') {
+                // ensure article author for new articles defaults to current user
+                $author_val = $selected_author > 0 ? $selected_author : $uid;
+                echo '<input type="hidden" name="autor" value="' . (int)$author_val . '">';
                 echo '<div class="form-control">' . htmlspecialchars($username) . '</div>';
             } else {
+                // fallback: allow selecting authors if other roles are introduced
+                $users = [];
+                $ustmt = $conn->prepare('SELECT id_user, username, first_name, last_name FROM users WHERE role = ? ORDER BY username');
+                $author_role = 'author';
+                $ustmt->bind_param('s', $author_role);
+                $ustmt->execute();
+                $ures = $ustmt->get_result();
+                if ($ures) { while ($u = $ures->fetch_assoc()) $users[] = $u; $ures->free(); }
+                $ustmt->close();
                 echo '<select name="autor" class="form-select">';
                 echo '<option value="0">-- Selecionar autor --</option>';
                 foreach ($users as $u) {
@@ -118,7 +120,17 @@ function e($s){ return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'
         <div class="mb-3">
             <label class="form-label">Imagem (jpg/png)</label>
             <?php if (!empty($article['foto'])): ?>
-                <div class="mb-2"><img src="../imgs/<?php echo e(basename($article['foto'])); ?>" style="max-height:120px;"></div>
+                <?php
+                    $af = trim($article['foto']);
+                    if (preg_match('#^https?://#i', $af)) {
+                        $imgsrc = $af;
+                    } elseif (strpos($af, 'imgs/') === 0) {
+                        $imgsrc = '../' . $af;
+                    } else {
+                        $imgsrc = '../imgs/' . e(basename($af));
+                    }
+                ?>
+                <div class="mb-2"><img src="<?php echo e($imgsrc); ?>" style="max-height:120px;"></div>
             <?php endif; ?>
             <input type="file" name="foto" accept="image/*" class="form-control" <?php echo $id>0 ? '' : 'required'; ?>>
         </div>
